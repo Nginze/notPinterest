@@ -9,12 +9,12 @@ class Router {
 
     public function post($path, $handler)
     {
-        $this->addHandler($path, $handler, "POST"); 
+        $this->addHandler($path,  $handler, "POST"); 
     }
 
     public function addHandler($path, $handler, $method)
     {
-        $this->handlers[$path] = [
+        $this->handlers[$path . $method] = [
             "path" => $path,
             "method" => $method,
             "handler" => $handler
@@ -28,6 +28,7 @@ class Router {
 
         foreach($this->handlers as $handler)
         {
+
             if($handler["path"] == $requestPath && $handler["method"] == $method){
                 $callback = $handler["handler"];
             }

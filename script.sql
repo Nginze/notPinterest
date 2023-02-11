@@ -5,6 +5,7 @@ USE notPinterest;
 CREATE TABLE AppUser(
 	userid int auto_increment,
     googleid varchar(255),
+    githubid varchar(255),
     avatarurl varchar(255),
     username varchar(255),
     displayname varchar(255),
@@ -16,7 +17,7 @@ CREATE TABLE Pins (
     pindesc VARCHAR(100),
     creatorid INT NOT NULL,
     websiteurl VARCHAR(60),
-    imgurl VARCHAR(60) NOT NULL,
+    imgurl VARCHAR(255) NOT NULL,
     ispublic BOOLEAN DEFAULT TRUE,
     PRIMARY KEY (pinid),
     FOREIGN KEY (creatorid)

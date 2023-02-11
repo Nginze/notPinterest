@@ -1,6 +1,6 @@
 <?php
 
-require "../config/credentials.config.php";
+require __DIR__ . "/../config/credentials.config.php";
 
 class Database {
     private $host = HOST;
