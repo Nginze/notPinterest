@@ -8,16 +8,17 @@ class Model
     public function __construct()
     {
         $db = new Database;
-        $this->conn = $db->connect();
+        
     }
 
     public function getUserId()
     {
-        return $_SESSION['userid'];
+        return $_SESSION['user']['userid'];
     }
 
     public function insert($data)
     {
+        
         try {
             $columns = implode(", ", array_keys($data));
             $values = ":" . implode(", :", array_keys($data));
@@ -47,10 +48,10 @@ class Model
         }
     }
 
-    public function findById($id)
+    public function findById($id, $column)
     {
         try {
-            $query = "SELECT * FROM $this->tableName WHERE id = :id";
+            $query = "SELECT * FROM $this->tableName WHERE $column = :id";
             $statement = $this->conn->prepare($query);
             $statement->bindValue(":id", $id);
             $statement->execute();
@@ -61,7 +62,7 @@ class Model
         }
     }
 
-    public function update($id, $data)
+    public function update($id, $data, $column)
     {
         try {
             $sets = array();
@@ -69,7 +70,7 @@ class Model
                 $sets[] = "$key = :$key";
             }
             $sets = implode(", ", $sets);
-            $query = "UPDATE $this->tableName SET $sets WHERE id = :id";
+            $query = "UPDATE $this->tableName SET $sets WHERE $column = :id";
             $statement = $this->conn->prepare($query);
             $statement->bindValue(":id", $id);
             foreach ($data as $key => $value) {

@@ -5,6 +5,8 @@ class Like extends Model{
     public function __construct()
     {
         $this->tableName = "likes";
+        $db = new Database;
+        $this->conn =$db->connect();
     }
 
     public function createLike($commentid){

@@ -5,10 +5,14 @@ class Comment extends Model{
     public function __construct()
     {
         $this->tableName = "comments";
+        $db = new Database;
+        $this->conn =$db->connect();
+
     }
-    public function createComment()
+    public function createComment($data)
     {
-        
+        $data['creatorid'] = $this->getUserId();
+        return $this->insert($data);
     }
 
     public function getComments($pinid)
