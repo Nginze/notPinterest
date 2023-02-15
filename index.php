@@ -1,6 +1,10 @@
 <?php
 
 require_once "./app/core/init.php";
+require_once(__DIR__ . '/vendor/autoload.php');
+
+use Cloudinary\Cloudinary;
+
 
 session_start();
 
@@ -12,7 +16,7 @@ $user = new User;
 
 
 $app->router->get("/", function () {
-  echo var_dump($_SESSION['user']);
+  require_once __DIR__ . "./app/views/feed/index.php";
 });
 
 //Authentication Routes
@@ -34,11 +38,8 @@ $app->router->get("/auth/google", function () {
 $app->router->get("/home", function () {
   $pin = new Pin;
   $q = $pin->getUserFeed(1);
-  while ($row = $q->fetch()) {
-    echo "<p>" . $row['pintitle'] . "</p>";
-    echo "<p>" . $row['pindesc'] . "</p>";
-    echo "<img src =" . $row['imgurl'] . "/>";
-  }
+  header('Content-Type: application/json; charset=utf-8');
+  echo json_encode($q->fetchAll(PDO::FETCH_ASSOC)); 
 });
 
 $app->router->get("/create", function () {
@@ -48,8 +49,37 @@ $app->router->get("/create", function () {
 $app->router->post("/create", function () {
   $data = $_POST;
   $pin = new Pin;
-  $q = $pin->createPin($data);
-  echo 'not validated yet';
+  $cloudinary = new Cloudinary(
+    [
+      'cloud' => [
+        'cloud_name' => 'chakra-me',
+        'api_key'    => '298514965965219',
+        'api_secret' => 'xtUkjeTX0Rgji31-w9md9iRwlw0',
+      ],
+    ]
+  );
+  $pinid = $pin->createPin($data);
+
+  $cloudinary->uploadApi()->upload($data['imgbase64'], [
+    "notification_url" => "http://localhost/media/upload?pinid=" .$pinid ,
+    'public_id' => $pinid 
+  ]);
+  
+  $imgurl = $cloudinary->image($pinid)->toUrl();
+  $data = [
+    "imgurl" => $imgurl 
+  ];
+  $pin->updatePin($pinid, $data); 
+});
+
+$app->router->post('/media/upload', function () {
+  $pin = new Pin;
+  $pinid = $_GET["pinid"];
+  echo $pinid;
+  $data = [
+    "imgurl" => $_POST["secure_url"]
+  ];
+  $pin->updatePin($pinid, $data); 
 });
 
 $app->router->get("/pin", function () {
@@ -71,7 +101,7 @@ $app->router->post("/like", function () {
   }
 });
 
-$app->router->post("/comment", function () {  
+$app->router->post("/comment", function () {
   $comment = new Comment;
   $success = $comment->createComment($_POST);
   if (!$success) {

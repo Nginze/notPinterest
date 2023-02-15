@@ -15,3 +15,9 @@ define("GOOGLE_CALLBACK_URL", "http://localhost/notPinterest/auth/google");
 define("DISCORD_CLIENT_ID", "");
 define("DISCORD_CLIENT_SECRET", "");
 define("DISCORD_CALLBACK_URL", "");
+
+//Cloudinary Credentials
+
+define("CLOUD_NAME", 'chakra-me');
+define("API_KEY", '298514965965219');
+define("API_SECRET", 'xtUkjeTX0Rgji31-w9md9iRwlw0');

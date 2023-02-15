@@ -37,10 +37,14 @@ CREATE TABLE Replies (
     replyid INT AUTO_INCREMENT,
     commentid INT NOT NULL,
     creatorid INT NOT NULL,
+    replyto INT,
     PRIMARY KEY (replyid),
     FOREIGN KEY (commentid)
         REFERENCES comments (commentid),
     FOREIGN KEY (creatorid)
+        REFERENCES appuser (userid)
+        ON DELETE CASCADE
+    FOREIGN KEY (replytO)
         REFERENCES appuser (userid)
         ON DELETE CASCADE
 );

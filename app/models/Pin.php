@@ -10,9 +10,11 @@ class Pin extends Model
     }
     public function getUserFeed($userid)
     {
-        echo var_dump($this->conn);
-        $sql = "select * from 
-                pins where ispublic = true
+        $sql = "select userid, username, avatarurl, imgurl, websiteurl ,displayname 
+                from pins 
+                inner join appuser
+                on userid = creatorid 
+                where ispublic = true
        ";
         $q = $this->conn->query($sql);
         $q->setFetchMode(PDO::FETCH_ASSOC);
@@ -32,18 +34,18 @@ class Pin extends Model
         $title = $pindata['title'];
         $desc =  $pindata['desc'];
         $link =  $pindata['link'];
-        $creatorid = 1;
-        $imgurl = "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg";
+        $creatorid = $this->getUserId();
         $ispublic = true;
-        $sql = "insert into pins(pintitle, pindesc, creatorid, websiteurl, imgurl, ispublic) values (?,?,?,?,?,?)";
+        $sql = "insert into pins(pintitle, pindesc, creatorid, websiteurl, ispublic) values (?,?,?,?,?)";
         $q = $this->conn->prepare($sql);
-        $q->execute([$title, $desc, $creatorid, $link, $imgurl, $ispublic]);
-        return $q;
+        $q->execute([$title, $desc, $creatorid, $link, $ispublic]);
+        return $this->conn->lastInsertId();
     }
 
 
-    public function updatePin($pinid)
+    public function updatePin($pinid, $data)
     {
+        return $this->update($pinid, $data, "pinid");
     }
 
     public function deletePin($pinid)
