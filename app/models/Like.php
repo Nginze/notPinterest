@@ -38,4 +38,17 @@ class Like extends Model{
             $this->createLike($commentid);
         }
     }
+
+    public function getLikeMap($commentid){
+        try {
+            $query = "SELECT creatorid FROM $this->tableName WHERE commentid = :id";
+            $statement = $this->conn->prepare($query);
+            $statement->bindValue(":id", $commentid);
+            $statement->execute();
+            return $statement->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            return false;
+        }
+    }
 }

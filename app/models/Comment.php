@@ -1,13 +1,13 @@
 <?php
 
-class Comment extends Model{
-    
+class Comment extends Model
+{
+
     public function __construct()
     {
         $this->tableName = "comments";
         $db = new Database;
-        $this->conn =$db->connect();
-
+        $this->conn = $db->connect();
     }
     public function createComment($data)
     {
@@ -17,15 +17,19 @@ class Comment extends Model{
 
     public function getComments($pinid)
     {
-        $sql = "select content, creatorid, username, avatarurl from comments 
+        try {
+            $query = "select commentid, content, creatorid, username, avatarurl, displayname from comments 
                 inner join appuser
                 on comments.creatorid = appuser.userid
-                where pinid = $pinid 
-        ";
-
-        $q = $this->conn->query($sql);
-        $q->setFetchMode(PDO::FETCH_ASSOC);
-
-        return $q;
+                where pinid = :id 
+            ";
+            $statement = $this->conn->prepare($query);
+            $statement->bindValue(":id", $pinid);
+            $statement->execute();
+            return $statement->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            return false;
+        }
     }
 }

@@ -49,4 +49,22 @@ class SavedPin extends Model
             return false;
         }
     }
+
+    public function getCurrentUserSaved()
+    {
+        try {
+            $query = "SELECT pins.pinid, imgurl, websiteurl FROM $this->tableName
+                      INNER JOIN pins 
+                      ON pins.pinid = savedpins.pinid 
+                      WHERE saverid = :id";
+            $statement = $this->conn->prepare($query);
+            $statement->bindValue(":id", $this->getUserId());
+            $statement->execute();
+            return $statement->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            return false;
+        }
+    }
+
 }

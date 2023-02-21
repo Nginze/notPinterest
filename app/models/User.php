@@ -6,7 +6,11 @@ class User extends Model
     {
         $db = new Database;
         $this->tableName = "appuser";
-        $this->conn =$db->connect();
+        $this->conn = $db->connect();
+    }
+    public function getCurrentUserProfile()
+    {
+        return $this->findById($this->getUserId(), 'userid');
     }
 
     public function getUserById($id)

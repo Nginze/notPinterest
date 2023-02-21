@@ -10,7 +10,7 @@ class Pin extends Model
     }
     public function getUserFeed($userid)
     {
-        $sql = "select userid, username, avatarurl, imgurl, websiteurl ,displayname 
+        $sql = "select pinid, userid, username, avatarurl, imgurl, websiteurl ,displayname 
                 from pins 
                 inner join appuser
                 on userid = creatorid 
@@ -23,10 +23,21 @@ class Pin extends Model
 
     public function getPinById($id)
     {
-        $sql = "select * from pins where pinid = $id";
-        $q = $this->conn->query($sql);
-        $q->setFetchMode(PDO::FETCH_ASSOC);
-        return $q;
+        try {
+
+            $query = "select pintitle, pindesc, username, avatarurl, imgurl, displayname from pins 
+                inner join appuser
+                on creatorid = appuser.userid 
+                where pinid = :id 
+                ";
+            $statement = $this->conn->prepare($query);
+            $statement->bindValue(":id", $id);
+            $statement->execute();
+            return $statement->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            return false;
+        }
     }
 
     public function createPin($pindata)
@@ -50,5 +61,37 @@ class Pin extends Model
 
     public function deletePin($pinid)
     {
+    }
+
+    public function getCurrentUserCreated()
+    {
+
+        try {
+            $query = "SELECT pins.pinid, imgurl, websiteurl FROM $this->tableName
+                      WHERE creatorid= :id";
+            $statement = $this->conn->prepare($query);
+            $statement->bindValue(":id", $this->getUserId());
+            $statement->execute();
+            return $statement->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            return false;
+        }
+    }
+
+
+    public function search($query)
+    {
+        try {
+            $query = "SELECT pinid, pintitle, imgurl FROM $this->tableName
+                      WHERE (`pintitle` LIKE '%" . $query . "%') OR (`pindesc` LIKE '%" . $query . "%')";
+            $statement = $this->conn->prepare($query);
+            $statement->bindValue(":id", $this->getUserId());
+            $statement->execute();
+            return $statement->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            return false;
+        }
     }
 }
