@@ -67,4 +67,9 @@ class SavedPin extends Model
         }
     }
 
+    public function getSaveMap()
+    {
+        
+    }
+
 }

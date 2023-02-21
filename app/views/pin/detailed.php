@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js" integrity="sha512-lbwH47l/tPXJYG9AcFNoJaTMhGvYWhVM9YI43CT+uteTRRaiLCui8snIgyAN8XWgNjNhCqlAUdzZptso6OCoFQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.css" integrity="sha512-oe8OpYjBaDWPt2VmSFR+qYOdnTjeV9QPLJUeqZyprDEQvQLJ9C5PCFclxwNuvb/GQgQngdCXzKSFltuHD3eCxA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script>
         tailwind.config = {
             theme: {
@@ -118,7 +120,12 @@
             </div>
         </section>
         <section class="w-full col-span-4 px-8 overflow-y-auto">
-
+            <div id="toast" style="display:none" class="animate__animated animate__faster animate__fadeInUp absolute bottom-8 left-1/2 flex items-center w-auto bg-bg_aux rounded-full px-8 py-4 z-50">
+                <span class="bg-white rounded-2xl p-2 mr-4 flex items-center justify-center text-3xl text-txt_light">
+                    <iconify-icon icon="material-symbols:bookmark-added-outline"></iconify-icon>
+                </span>
+                Saved pin to profile!
+            </div>
             <div class="flex flex-row items-center justify-center w-full bg-bg_primary py-4 sticky top-0 z-10">
                 <div class="w-full relative mr-4">
                     <ion-icon class="absolute top-3.5 text-xl left-3" name="search-outline"></ion-icon>
@@ -158,7 +165,7 @@
                                 <button class="bg-bg_secondary w-10 h-10 flex items-center justify-center rounded-full text-xl"><ion-icon name="link-outline"></ion-icon></button>
                                 <button class="bg-bg_secondary w-10 h-10 flex items-center justify-center rounded-full text-xl"><ion-icon name="share-outline"></ion-icon></button>
                             </div>
-                            <button class="bg-btn_primary px-4 py-2 rounded-3xl font-semibold">Save</button>
+                            <button id="detail-pin-save" class="bg-btn_primary px-4 py-2 rounded-3xl font-semibold">Save</button>
                         </div>
                         <div class="h-4/5 overflow-y-auto">
                             <div class="flex h-4/5 flex-col items-start">
@@ -192,13 +199,13 @@
                                                     <div class="w-3/4 flex items-center">
                                                         <span class="mr-4">2W</span>
                                                         <span data-id=<?php echo $comment['commentid'] ?> id="reply-btn" class="mr-4 px-2 py-1 cursor-pointer rounded-lg hover:bg-bg_secondary">Reply</span>
-                                                        <span data-id=<?php echo $comment['commentid'] ?> class="like-btn text-xl flex items-center justify-center p-1 rounded-lg text-red-500 cursor-pointer">
+                                                        <span data-id=<?php echo $comment['commentid'] ?> class="like-btn hover:bg-bg_secondary text-xl flex items-center justify-center p-1 rounded-lg text-red-500 cursor-pointer">
                                                             <?php
                                                             $user = new User;
                                                             $curr_userid = $user->getUserId();
                                                             $hasLiked = in_array($curr_userid, $comment['likemap']);
 
-                                                            echo $hasLiked ? '<ion-icon class="like-outline" name="heart">' : '<ion-icon class="like-filled" name="heart">';
+                                                            echo $hasLiked ? '<ion-icon class="like-icon like-outline" name="heart">' : '<ion-icon class="like-icon like-filled" name="heart-outline">';
                                                             // if (in_array($curr_userid, $comment['likemap'])) {
                                                             //     echo '<ion-icon class="like-filled" name="heart">';
                                                             //     echo '<ion-icon class="like-outline" style="display:none" name="heart-outline"></ion-icon>';
@@ -209,8 +216,8 @@
                                                             ?>
                                                         </span>
                                                     </div>
-                                                    <div  style="display:none" class="reply-form w-full relative my-2">
-                                                        <button data-id=<?php echo $comment['commentid'] ?> style="display:none"  class="reply-send-btn absolute right-2 bg-btn_primary w-8 h-8 top-1 flex items-center justify-center  text-lg text-center rounded-full">
+                                                    <div style="display:none" class="reply-form w-full relative my-2">
+                                                        <button data-id=<?php echo $comment['commentid'] ?> style="display:none" class="reply-send-btn absolute right-2 bg-btn_primary w-8 h-8 top-1 flex items-center justify-center  text-lg text-center rounded-full">
                                                             <ion-icon data-id=<?php echo $comment['commentid'] ?> name="send"></ion-icon>
                                                         </button>
                                                         <div class="reply-emoji-btn absolute right-2  w-10 h-10 top-0 flex items-center justify-center  text-2xl text-center rounded-full">
@@ -218,12 +225,25 @@
                                                         </div>
                                                         <input class="reply-input font-semibold w-full rounded-3xl px-4 py-2 bg-bg_secondary outline-none border-none" placeholder="Reply to comment" />
                                                     </div>
-                                                    <?php 
-                                                        if($comment['hasreplies'] > 0){
-                                                            $noReplies = $comment['hasreplies'];
-                                                            echo '<button class="flex items-center font-semibold text-txt_light"> <ion-icon class="mr-2" name="chevron-down"></ion-icon>'.$noReplies.' replies</button>';
-                                                        } 
+                                                    <?php
+                                                    if ($comment['hasreplies'] > 0) {
+                                                        $noReplies = $comment['hasreplies'];
+                                                        $commentid = $comment['commentid'];
+                                                        echo "<button data-id=$commentid class='view-replies my-2 flex items-center font-semibold text-txt_light hover:bg-bg_secondary hover:text-white px-2 py-1 rounded-lg'> <ion-icon class='chevron mr-2' name='chevron-down'></ion-icon>$noReplies replies</button>";
+                                                    }
                                                     ?>
+                                                    <div style="display: none;" class="replies-container w-full ml-5 flex flex-col justify-center items-start">
+
+                                                        <div class="reply-loader">
+                                                            <div role="status">
+                                                                <svg aria-hidden="true" class="inline w-6 h-6 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                    <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
+                                                                    <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
+                                                                </svg>
+                                                                <span class="sr-only">Loading...</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         <?php endforeach ?>

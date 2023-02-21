@@ -149,6 +149,13 @@ $app->router->post("/comment", function () {
   }
 });
 
+$app->router->get("/replies", function(){
+  $commentid = $_GET['commentid'];
+  $reply = new Reply;
+  header('Content-Type: application/json; charset=utf-8');
+  echo json_encode($reply->getReplies($commentid));
+});
+
 $app->router->post("/reply", function () {
   $reply = new Reply;
 
