@@ -51,15 +51,15 @@
                 <span>By signing up you accept our Privacy Policy and Terms of Service.</span>
             </div>
             <div class="w-full">
-                <input class="font-semibold w-full rounded-lg mb-6 px-4 py-4 bg-bg_secondary outline-none border-none" placeholder="Email Address" />
-                <input class="font-semibold w-full rounded-lg mb-6 px-4 py-4 bg-bg_secondary outline-none border-none" placeholder="Username" />
+                <input id="email-input" class="font-semibold w-full rounded-lg mb-6 px-4 py-4 bg-bg_secondary outline-none border-none" placeholder="Email Address" />
+                <input id="password-input" class="font-semibold w-full rounded-lg mb-6 px-4 py-4 bg-bg_secondary outline-none border-none" placeholder="Password" />
             </div>
             <div class="w-full">
-                <button class="w-full px-4 py-4 font-semibold  text-center bg-btn_primary rounded-lg">
+                <button id="login" class="w-full px-4 py-4 font-semibold  text-center bg-btn_primary rounded-lg">
                    Login to account 
                 </button>
                 <div class="divider">OR</div>
-                <button class="flex items-center  justify-center w-full px-4 py-4 font-semibold  text-center bg-btn_google text-white rounded-lg">
+                <button id="google" class="flex items-center  justify-center w-full px-4 py-4 font-semibold  text-center bg-btn_google text-white rounded-lg">
                     <ion-icon class="mr-4 text-lg text-white" name="logo-google"></ion-icon>
                     Login with Google
                 </button>
@@ -67,30 +67,7 @@
         </div>
     </main>
 </body>
-<script>
-    const BACKEND_URI = "http://localhost/notPinterest"
-    const width = 600;
-    const height = 600;
-    const left =
-        typeof window !== "undefined" && window.innerWidth / 2 - width / 2;
-    const _top =
-        typeof window !== "undefined" && window.innerHeight / 2 - height / 2;
-
-    const githubButton = document.getElementById("github")
-    const githubLogin = () => {
-
-        window.open(
-            BACKEND_URI + "/auth/github",
-            "",
-            `toolbar=no, location=no, directories=no, status=no, menubar=no, 
-            scrollbars=no, resizable=no, copyhistory=no, width=${width}, 
-            height=${height}, top=${_top}, left=${left}`
-        );
-    };
-
-    githubButton.addEventListener("click", () => {
-        githubLogin()
-    })
+<script src="http://localhost/notPinterest/public/js/pages/auth.js">
 </script>
 
 </html>

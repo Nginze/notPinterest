@@ -121,14 +121,14 @@ $("body").on("click", ".view-replies", evnt => {
 });
 
 $("#detail-pin-save").on("click", e => {
-  const originalState = $(e.target).html()
+  const originalState = $(e.target).html();
   $(e.target).html("Saving...");
   $(e.target).removeClass("bg-btn_primary");
   $(e.target).addClass("bg-bg_primary");
   const pinid = window.location.search.split("=")[1];
   $.post("/notPinterest/pin/save", { pinid }, (data, status) => {
     if (originalState == "Saved") {
-      console.log('hello')
+      console.log("hello");
       $(e.target).html("Save");
       $(e.target).addClass("bg-btn_primary");
       $(e.target).removeClass("bg-bg_primary");
@@ -136,7 +136,7 @@ $("#detail-pin-save").on("click", e => {
           <span class="bg-white rounded-2xl p-2 mr-4 flex items-center justify-center text-3xl text-txt_light">
             <iconify-icon icon="material-symbols:bookmark-added-outline"></iconify-icon>
           </span>
-          Removed pin to profile!
+          Removed pin from profile!
       `);
 
       $("#toast").show();
@@ -164,14 +164,15 @@ $("#detail-pin-save").on("click", e => {
 
 $("body").on("click", "#follow-btn", e => {
   const followerid = $("#follow-btn").data("id");
+  const username = $("#follow-btn").data("username");
   $.post("/notPinterest/user/follow", { followerid }, (data, status) => {
     if ($("#follow-btn").html() == "Following") {
-      $("#toast").html("You just unfollowed user!");
+      $("#toast").html("You just unfollowed " + username);
       $("#follow-btn").html("Follow");
       $("#follow-btn").addClass("bg-bg_secondary");
       $("#follow-btn").removeClass("bg-bg_primary");
     } else {
-      $("#toast").html("You just followed user!");
+      $("#toast").html("You just followed " + username);
       $("#follow-btn").html("Following");
 
       $("#follow-btn").removeClass("bg-bg_secondary");

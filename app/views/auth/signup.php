@@ -49,13 +49,13 @@
                 <span>By signing up you accept our Privacy Policy and Terms of Service.</span>
             </div>
             <div class="w-full">
-                <input class="font-semibold w-full rounded-lg mb-6 px-4 py-4 bg-bg_secondary outline-none border-none" placeholder="Email Address" />
-                <input class="font-semibold w-full rounded-lg mb-6 px-4 py-4 bg-bg_secondary outline-none border-none" placeholder="Username" />
-                <input class="font-semibold w-full rounded-lg mb-6 px-4 py-4 bg-bg_secondary outline-none border-none" type="password" placeholder="Password" />
-                <input class="font-semibold w-full rounded-lg mb-6 px-4 py-4 bg-bg_secondary outline-none border-none" type="email" placeholder="Retype Password" />
+                <input id="email-input" class="font-semibold w-full rounded-lg mb-6 px-4 py-4 bg-bg_secondary outline-none border-none" placeholder="Email Address" />
+                <input id="username-input" class="font-semibold w-full rounded-lg mb-6 px-4 py-4 bg-bg_secondary outline-none border-none" placeholder="Username" />
+                <input id="password-input" class="font-semibold w-full rounded-lg mb-6 px-4 py-4 bg-bg_secondary outline-none border-none" type="password" placeholder="Password" />
+                <input id="retype-input" class="font-semibold w-full rounded-lg mb-6 px-4 py-4 bg-bg_secondary outline-none border-none" type="email" placeholder="Retype Password" />
             </div>
             <div class="w-full">
-                <button class="w-full px-4 py-4 font-semibold  text-center bg-btn_primary rounded-lg">
+                <button id="signup" class="w-full px-4 py-4 font-semibold  text-center bg-btn_primary rounded-lg">
                     Create account
                 </button>
                 <!-- <div class="divider">OR</div> -->
@@ -67,5 +67,5 @@
         </div>
     </main>
 </body>
-
+<script src="http://localhost/notPinterest/public/js/pages/auth.js"></script>
 </html>

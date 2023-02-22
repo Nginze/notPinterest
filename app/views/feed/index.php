@@ -144,10 +144,10 @@
       </div>
       <div id="profile" class="w-full h-full flex flex-col justify-end justify-self-end">
         <div class="flex flex-row items-center justify-evenly bg-bg_aux rounded-2xl h-20 px-4 cursor-pointer hover:bg-btn_hover">
-          <img class="w-12 h-12 mr-2 object-contain rounded-full" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQY_ocgOLIcfNTo2uGIaRenaGLe-uD_pxXUfHxRpW4&s" />
+          <img class="w-12 h-12 mr-2 object-contain rounded-full" src=<?php echo $profile['avatarurl']?>/>
           <div class="mr-3 w-2/3">
-            <span class="font-semibold text-sm">Lebron James</span>
-            <span class="opacity-30 text-sm font-semibold">Shinyunicorn333</span>
+            <span class="font-semibold text-sm"><?php echo $profile['username']?></span>
+            <span class="opacity-30 text-sm font-semibold"><?php echo $profile['emailaddress'] ?></span>
           </div>
           <div class="w-1/10">
             <ion-icon name="chevron-forward"></ion-icon>

@@ -3,11 +3,12 @@ const state = {
 };
 
 $.get("/notPinterest/profile", (data, status) => {
+  console.log(data)
   $("#profile-container").prepend(
     `
             <div class="flex flex-col items-center mb-10">
                 <img class="w-32 h-32 rounded-full mb-6" src=${data.avatarurl}/> 
-                <span class="text-xl">${data.displayname}</span>
+                <span class="text-xl">${data.username}</span>
                 <span class="text-lg mb-4">@jack123</span>
                 <span class="text-sm">0 Following </span>
             </div> 

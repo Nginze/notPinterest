@@ -9,13 +9,15 @@ use Cloudinary\Cloudinary;
 session_start();
 
 // Defualt session for testing
-$_SESSION['user'] = ['userid' => 1];
+// $_SESSION['user'] = ['userid' => 1];
 
 $app = new App;
 $user = new User;
 
 
 $app->router->get("/", function () {
+  $user = new User;
+  $profile = $user->getCurrentUserProfile();
   require_once __DIR__ . "./app/views/feed/index.php";
 });
 
@@ -29,10 +31,14 @@ $app->router->get("/following", function () {
 
 
 $app->router->get("/myprofile", function () {
+  $user = new User;
+  $profile = $user->getCurrentUserProfile();
   require_once __DIR__ . "./app/views/profile/userprofile.php";
 });
 
 $app->router->get("/pin/detail", function () {
+  $user = new User;
+  $profile = $user->getCurrentUserProfile();
   require_once __DIR__ . "./app/views/pin/detailed.php";
 });
 
@@ -44,6 +50,31 @@ $app->router->get("/login", function () {
 
 $app->router->get("/signup", function () {
   require_once __DIR__ . "./app/views/auth/signup.php";
+});
+
+$app->router->post("/login", function(){
+  $user = new User;
+  $success = $user->login($_POST);
+  if($success){
+    header('HTTP/1.1 200 OK');
+    exit();
+  }else{
+    header('HTTP/1.1 500');
+    exit();
+  }
+});
+
+$app->router->post("/signup", function(){
+  $user = new User;
+  $success = $user->signUp($_POST);
+  if($success){
+    header('HTTP/1.1 200 OK');
+    exit();
+  }else{
+    header('HTTP/1.1 500');
+    exit();
+  }
+
 });
 
 $app->router->get("/auth/github", function () {
@@ -111,6 +142,8 @@ $app->router->get("/pin", function () {
   $reply = new Reply;
   $savedPin = new SavedPin;
   $userFollow = new UserFollow;
+  $user = new User;
+  $profile  = $user->getCurrentUserProfile();
   $post = $pin->getPinById($pinid);
   $mycomments = $comment->getComments($pinid);
   $comments = array();

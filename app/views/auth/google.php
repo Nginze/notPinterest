@@ -21,10 +21,9 @@ if ($google->getUserProfile()) {
         $currentUser = $user->getUserByProviderId($google->getUserProfile()->identifier, 'google');
     }
     $_SESSION['user'] = $currentUser;
-    echo "<pre>";
-    var_dump($google->getUserProfile());
-    echo "</pre>";
+    echo "<p>Loading....</p>";
     echo "<script>
-        // window.close()
+        window.opener.location.replace('/notPinterest/')
+        window.close()
     </script>";
 }

@@ -66,4 +66,43 @@ class User extends Model
     public function deleteUser()
     {
     }
+
+    public function signUp($user)
+    {
+        $encryptedPassword = password_hash($user['password'], PASSWORD_DEFAULT);
+        $user['password'] = $encryptedPassword;
+        $success = $this->insert($user);
+        if ($success) {
+
+            $userid = $this->conn->lastInsertId(); 
+            $_SESSION['user'] = $this->getUserById($userid);
+            return true;
+        }
+        return false;
+    }
+
+    public function login($user)
+    {
+        try {
+            $query = "select * from $this->tableName
+                      where emailaddress = :email 
+            ";
+            $statement = $this->conn->prepare($query);
+            $statement->bindValue(":email", $user['emailaddress']);
+            $statement->execute();
+            $row = $statement->fetch(PDO::FETCH_ASSOC);
+            if ($row) {
+                echo var_dump($user['password']);
+                if (password_verify($user['password'], $row['password'])) {
+                    $_SESSION['user'] = $row;
+                    return true;
+                }
+                return false;
+            }
+            return false;
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            return false;
+        }
+    }
 }
