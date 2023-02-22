@@ -109,9 +109,13 @@ $app->router->get("/pin", function () {
   $comment = new Comment;
   $like = new Like;
   $reply = new Reply;
+  $savedPin = new SavedPin;
+  $userFollow = new UserFollow;
   $post = $pin->getPinById($pinid);
   $mycomments = $comment->getComments($pinid);
   $comments = array();
+  $post['savemap'] = $savedPin->getSaveMap($pinid);
+  $post['followmap'] = $userFollow->getFollowMap(); 
   foreach ($mycomments as $comment) {
     $comment['likemap'] = $like->getLikeMap($comment['commentid']);
     $comment['hasreplies'] = count($reply->getReplies($comment['commentid']));
@@ -119,6 +123,13 @@ $app->router->get("/pin", function () {
       $comment['likemap'] = array();
     }
     array_push($comments, $comment);
+  }
+
+  if (!$post['savemap']) {
+    $post['savemap'] = array();
+  }
+  if(!$post['followmap']){
+    $post['followmap'] = array();
   }
 
   // echo "<pre>";
@@ -149,7 +160,7 @@ $app->router->post("/comment", function () {
   }
 });
 
-$app->router->get("/replies", function(){
+$app->router->get("/replies", function () {
   $commentid = $_GET['commentid'];
   $reply = new Reply;
   header('Content-Type: application/json; charset=utf-8');
@@ -217,6 +228,11 @@ $app->router->get("/user", function () {
 
 
 $app->router->post("/user/follow", function () {
+  $userFollow= new UserFollow;
+  if (isset($_POST['followerid'])) {
+    $followerid = $_POST['followerid'];
+    $userFollow->checkFollow($_POST);
+  }
 });
 
 

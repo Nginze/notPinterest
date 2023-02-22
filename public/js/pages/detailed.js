@@ -120,18 +120,66 @@ $("body").on("click", ".view-replies", evnt => {
   });
 });
 
-$("#detail-pin-save").on("click", (e) => {
+$("#detail-pin-save").on("click", e => {
+  const originalState = $(e.target).html()
   $(e.target).html("Saving...");
   $(e.target).removeClass("bg-btn_primary");
   $(e.target).addClass("bg-bg_primary");
   const pinid = window.location.search.split("=")[1];
-  $.post("/notPinterest/pin/save", {pinid}, (data, status) => {
-    if (status == "success") {
+  $.post("/notPinterest/pin/save", { pinid }, (data, status) => {
+    if (originalState == "Saved") {
+      console.log('hello')
+      $(e.target).html("Save");
+      $(e.target).addClass("bg-btn_primary");
+      $(e.target).removeClass("bg-bg_primary");
+      $("#toast").html(`
+          <span class="bg-white rounded-2xl p-2 mr-4 flex items-center justify-center text-3xl text-txt_light">
+            <iconify-icon icon="material-symbols:bookmark-added-outline"></iconify-icon>
+          </span>
+          Removed pin to profile!
+      `);
+
       $("#toast").show();
-      $(e.target).html("Saved")
+      setTimeout(() => {
+        $("#toast").hide();
+      }, 5000);
+    } else {
+      $(e.target).html("Saved");
+      $(e.target).removeClass("bg-btn_primary");
+      $(e.target).addClass("bg-bg_primary");
+
+      $("#toast").html(`
+          <span class="bg-white rounded-2xl p-2 mr-4 flex items-center justify-center text-3xl text-txt_light">
+            <iconify-icon icon="material-symbols:bookmark-added-outline"></iconify-icon>
+          </span>
+          Saved pin to profile!
+      `);
+      $("#toast").show();
       setTimeout(() => {
         $("#toast").hide();
       }, 5000);
     }
+  });
+});
+
+$("body").on("click", "#follow-btn", e => {
+  const followerid = $("#follow-btn").data("id");
+  $.post("/notPinterest/user/follow", { followerid }, (data, status) => {
+    if ($("#follow-btn").html() == "Following") {
+      $("#toast").html("You just unfollowed user!");
+      $("#follow-btn").html("Follow");
+      $("#follow-btn").addClass("bg-bg_secondary");
+      $("#follow-btn").removeClass("bg-bg_primary");
+    } else {
+      $("#toast").html("You just followed user!");
+      $("#follow-btn").html("Following");
+
+      $("#follow-btn").removeClass("bg-bg_secondary");
+      $("#follow-btn").addClass("bg-bg_primary");
+    }
+    $("#toast").show();
+    setTimeout(() => {
+      $("#toast").hide();
+    }, 5000);
   });
 });

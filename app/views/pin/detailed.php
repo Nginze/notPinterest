@@ -165,7 +165,16 @@
                                 <button class="bg-bg_secondary w-10 h-10 flex items-center justify-center rounded-full text-xl"><ion-icon name="link-outline"></ion-icon></button>
                                 <button class="bg-bg_secondary w-10 h-10 flex items-center justify-center rounded-full text-xl"><ion-icon name="share-outline"></ion-icon></button>
                             </div>
-                            <button id="detail-pin-save" class="bg-btn_primary px-4 py-2 rounded-3xl font-semibold">Save</button>
+                            <?php
+                            $user = new User;
+                            $hasSaved = in_array($user->getUserId(), $post['savemap']);
+                            if (!$hasSaved) {
+                                echo '<button id="detail-pin-save" class="bg-btn_primary px-4 py-2 rounded-3xl font-semibold">Save</button>';
+                            } else {
+
+                                echo '<button id="detail-pin-save" class="bg-bg_primary px-4 py-2 rounded-3xl font-semibold">Saved</button>';
+                            }
+                            ?>
                         </div>
                         <div class="h-4/5 overflow-y-auto">
                             <div class="flex h-4/5 flex-col items-start">
@@ -179,9 +188,16 @@
                                             <span class="text-xs text-txt_light font-semibold">@jack123</span>
                                         </div>
                                     </div>
-                                    <button class="px-3 py-1 rounded-3xl font-semibold bg-bg_secondary">
-                                        Follow
-                                    </button>
+                                    <?php
+                                        $user = new User;
+                                        $isFollowing =  in_array($user->getUserId(), $post['followmap']);
+                                        $postid = $post['userid'];
+                                        if(!$isFollowing){
+                                            echo "<button data-id=$postid id='follow-btn' class='px-3 py-1 rounded-3xl font-semibold bg-bg_secondary'>Follow</button>";
+                                        }else{
+                                            echo "<button data-id=$postid id='follow-btn' class='px-3 py-1 rounded-3xl font-semibold bg-bg_primary'>Following</button>";
+                                        }
+                                    ?>
                                 </div>
                                 <div>
                                     <span class="text-lg font-semibold mb-6"><?php echo count($comments) ?> comments</span>

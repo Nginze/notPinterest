@@ -25,7 +25,7 @@ class Pin extends Model
     {
         try {
 
-            $query = "select pintitle, pindesc, username, avatarurl, imgurl, displayname from pins 
+            $query = "select userid, pintitle, pindesc, username, avatarurl, imgurl, displayname from pins 
                 inner join appuser
                 on creatorid = appuser.userid 
                 where pinid = :id 

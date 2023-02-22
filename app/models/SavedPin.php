@@ -2,8 +2,7 @@
 
 class SavedPin extends Model
 {
-    public function __construct()
-    {
+    public function __construct() {
         $db = new Database;
         $this->tableName = "savedpins";
         $this->conn = $db->connect();
@@ -67,9 +66,18 @@ class SavedPin extends Model
         }
     }
 
-    public function getSaveMap()
+    public function getSaveMap($pinid)
     {
-        
-    }
 
+        try {
+            $query = "SELECT saverid FROM $this->tableName WHERE pinid= :id";
+            $statement = $this->conn->prepare($query);
+            $statement->bindValue(":id", $pinid);
+            $statement->execute();
+            return $statement->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            return false;
+        }
+    }
 }
