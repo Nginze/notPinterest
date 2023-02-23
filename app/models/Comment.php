@@ -9,19 +9,19 @@ class Comment extends Model
         $db = new Database;
         $this->conn = $db->connect();
     }
-    public function createComment($data)
+    public function createComment($comment)
     {
-        $data['creatorid'] = $this->getUserId();
-        return $this->insert($data);
+        $comment['creatorid'] = $this->getUserId();
+        return $this->insert($comment);
     }
 
     public function getComments($pinid)
     {
         try {
-            $query = "select commentid, content, creatorid, username, avatarurl, displayname from comments 
-                inner join appuser
-                on comments.creatorid = appuser.userid
-                where pinid = :id 
+            $query = "SELECT commentid, content, creatorid, username, avatarurl, displayname from comments 
+                      INNER JOIN appuser
+                      ON comments.creatorid = appuser.userid
+                      WHERE pinid = :id 
             ";
             $statement = $this->conn->prepare($query);
             $statement->bindValue(":id", $pinid);

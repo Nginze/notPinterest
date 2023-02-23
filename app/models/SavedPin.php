@@ -7,10 +7,10 @@ class SavedPin extends Model
         $this->tableName = "savedpins";
         $this->conn = $db->connect();
     }
-    public function savePin($data)
+    public function savePin($save)
     {
-        $data['saverid'] = $this->getUserId();
-        $this->insert($data);
+        $save['saverid'] = $this->getUserId();
+        $this->insert($save);
     }
 
     public function deleteSave($pinid)
@@ -29,9 +29,9 @@ class SavedPin extends Model
         }
     }
 
-    public function checkSave($data)
+    public function checkSave($save)
     {
-        $pinid = $data['pinid'];
+        $pinid = $save['pinid'];
         $userid = $this->getUserId();
         try {
             $sql = "select * from $this->tableName where pinid = '$pinid' and saverid = '$userid'";
@@ -40,7 +40,7 @@ class SavedPin extends Model
             if ($q->rowCount() > 0) {
                 $this->deleteSave($pinid);
             } else {
-                $this->savePin($data);
+                $this->savePin($save);
             }
             return true;
         } catch (PDOException $e) {

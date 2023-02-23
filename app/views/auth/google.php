@@ -22,8 +22,9 @@ if ($google->getUserProfile()) {
     }
     $_SESSION['user'] = $currentUser;
     echo "<p>Loading....</p>";
+    echo var_dump($google->getUserProfile());
     echo "<script>
         window.opener.location.replace('/notPinterest/')
-        window.close()
+        // window.close()
     </script>";
 }

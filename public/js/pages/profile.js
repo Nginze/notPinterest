@@ -1,11 +1,8 @@
-const state = {
-  currentTab: "created",
-};
-
-$.get("/notPinterest/profile", (data, status) => {
-  console.log(data)
-  $("#profile-container").prepend(
-    `
+$(document).ready(() => {
+  $.get("/notPinterest/profile", (data, status) => {
+    console.log(data);
+    $("#profile-container").prepend(
+      `
             <div class="flex flex-col items-center mb-10">
                 <img class="w-32 h-32 rounded-full mb-6" src=${data.avatarurl}/> 
                 <span class="text-xl">${data.username}</span>
@@ -26,11 +23,11 @@ $.get("/notPinterest/profile", (data, status) => {
             </div>
             
         `
-  );
-  $.get("/notPinterest/created", (data, status) => {
-    data.map(e => {
-      $("#mypins").append(
-        `
+    );
+    $.get("/notPinterest/created", (data, status) => {
+      data.map(e => {
+        $("#mypins").append(
+          `
         
     <div id="pin" class="w-full mb-6 cursor-zoom-in text-sm">
       <div class="w-full h-auto mb-5 relative group">
@@ -49,23 +46,23 @@ $.get("/notPinterest/profile", (data, status) => {
      
     </div>
         `
-      );
+        );
+      });
     });
+    $("#loader").hide();
   });
-  $("#loader").hide();
-});
-// $('#profile-container').on('click', () => {
-//   alert('clicked')
-// })
+  // $('#profile-container').on('click', () => {
+  //   alert('clicked')
+  // })
 
-$("body").on("click", "#created", () => {
-  $('#created').addClass('bg-bg_secondary')
-  $('#saved').removeClass('bg-bg_secondary')
-  $.get("/notPinterest/created", (data, status) => {
-    $("#mypins").empty();
-    data.map(e => {
-      $("#mypins").append(
-        `
+  $("body").on("click", "#created", () => {
+    $("#created").addClass("bg-bg_secondary");
+    $("#saved").removeClass("bg-bg_secondary");
+    $.get("/notPinterest/created", (data, status) => {
+      $("#mypins").empty();
+      data.map(e => {
+        $("#mypins").append(
+          `
         
     <div id="pin" class="w-full mb-6 cursor-zoom-in text-sm">
       <div class="w-full h-auto mb-5 relative group">
@@ -84,19 +81,19 @@ $("body").on("click", "#created", () => {
      
     </div>
         `
-      );
+        );
+      });
     });
   });
-});
 
-$("body").on("click", "#saved", () => {
-  $('#saved').addClass('bg-bg_secondary')
-  $('#created').removeClass('bg-bg_secondary')
-  $.get("/notPinterest/saved", (data, status) => {
-    $("#mypins").empty();
-    data.map(e => {
-      $("#mypins").append(
-        `
+  $("body").on("click", "#saved", () => {
+    $("#saved").addClass("bg-bg_secondary");
+    $("#created").removeClass("bg-bg_secondary");
+    $.get("/notPinterest/saved", (data, status) => {
+      $("#mypins").empty();
+      data.map(e => {
+        $("#mypins").append(
+          `
         
     <div id="pin" class="w-full mb-6 cursor-zoom-in text-sm">
       <div class="w-full h-auto mb-5 relative group">
@@ -116,7 +113,8 @@ $("body").on("click", "#saved", () => {
      
     </div>
         `
-      );
+        );
+      });
     });
   });
 });

@@ -17,26 +17,42 @@ class UserFollow extends Model
 
     public function deleteFollow($followerid)
     {
-        $userid = $this->getUserId();
-        $sql = "delete from userfollow where followerid= '$followerid' and userid= '$userid'";
-        $q = $this->conn->prepare($sql);
-        $q->execute();
+        try {
+            $userid = $this->getUserId();
+            $query = "DELETE 
+                 FROM $this->tableName 
+                 WHERE followerid = :followerid and userid= :userid";
+            $statement = $this->conn->prepare($query);
+            $statement->bindValue(":followerid", $followerid);
+            $statement->bindValue(":userid", $userid);
+            $statement->execute();
+            return true;
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            return false;
+        }
     }
-    public function checkFollow($data)
+    public function checkFollow($follow)
     {
         $userid = $this->getUserId();
-        $followerid = $data['followerid'];
-        $sql = "select * from userfollow where followerid = '$followerid' and userid= '$userid'";
-        $q = $this->conn->query($sql);
-        $q->setFetchMode(PDO::FETCH_ASSOC);
-        if($q->rowCount() > 0){
-            $this->deleteFollow($followerid);
-        }else{
-            $this->createFollow($data);
+        $followerid = $follow['followerid'];
+        $query = "SELECT * 
+                  FROM $this->tableName 
+                  WHERE followerid = :followerid and userid= :userid";
+        $statement = $this->conn->query($query);
+        $statement->bindValue(":followerid", $followerid);
+        $statement->bindValue(":userid", $userid);
+        $statement->execute();
+        $statement->setFetchMode(PDO::FETCH_ASSOC);
+        if ($statement->rowCount() > 0) {
+           return $this->deleteFollow($followerid);
+        } else {
+           return $this->createFollow($follow);
         }
     }
 
-    public function getFollowMap(){
+    public function getFollowMap()
+    {
         try {
             $query = "SELECT followerid FROM $this->tableName WHERE userid = :id";
             $statement = $this->conn->prepare($query);

@@ -21,17 +21,24 @@ class Pin extends Model
         return $q;
     }
 
-    public function getPinById($id)
+    public function getPinById($pinid)
     {
         try {
 
-            $query = "select userid, pintitle, pindesc, username, avatarurl, imgurl, displayname from pins 
-                inner join appuser
-                on creatorid = appuser.userid 
-                where pinid = :id 
+            $query = "SELECT userid, 
+                             pintitle, 
+                             pindesc, 
+                             username, 
+                             avatarurl, 
+                             imgurl, 
+                             displayname 
+                      FROM $this->tableName 
+                      INNER JOIN appuser
+                      ON creatorid = appuser.userid 
+                      WHERE pinid = :pinid
                 ";
             $statement = $this->conn->prepare($query);
-            $statement->bindValue(":id", $id);
+            $statement->bindValue(":pinid", $pinid);
             $statement->execute();
             return $statement->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
@@ -40,17 +47,15 @@ class Pin extends Model
         }
     }
 
-    public function createPin($pindata)
+    public function createPin($pin)
     {
-        $title = $pindata['title'];
-        $desc =  $pindata['desc'];
-        $link =  $pindata['link'];
         $creatorid = $this->getUserId();
-        $ispublic = true;
-        $sql = "insert into pins(pintitle, pindesc, creatorid, websiteurl, ispublic) values (?,?,?,?,?)";
-        $q = $this->conn->prepare($sql);
-        $q->execute([$title, $desc, $creatorid, $link, $ispublic]);
-        return $this->conn->lastInsertId();
+        $pin['creatorid'] = $this->getUserId();
+        $result = $this->insert($pin);
+        if ($result) {
+            return $this->conn->lastInsertId();
+        }
+        return null;
     }
 
 
@@ -65,9 +70,11 @@ class Pin extends Model
 
     public function getCurrentUserCreated()
     {
-
         try {
-            $query = "SELECT pins.pinid, imgurl, websiteurl FROM $this->tableName
+            $query = "SELECT pins.pinid, 
+                             imgurl, 
+                             websiteurl 
+                      FROM  $this->tableName
                       WHERE creatorid= :id";
             $statement = $this->conn->prepare($query);
             $statement->bindValue(":id", $this->getUserId());

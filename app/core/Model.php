@@ -8,17 +8,16 @@ class Model
     public function __construct()
     {
         $db = new Database;
-        
     }
 
     public function getUserId()
     {
-        return $_SESSION['user']['userid'];
+        return isset($_SESSION['user']) ? $_SESSION['user']['userid'] : null;
     }
 
     public function insert($data)
     {
-        
+
         try {
             $columns = implode(", ", array_keys($data));
             $values = ":" . implode(", :", array_keys($data));

@@ -39,7 +39,8 @@ class User extends Model
                 $data = [
                     'googleid' => $user->identifier,
                     'avatarurl' => $user->photoURL,
-                    'displayname' => $user->displayName
+                    'username' => $user->displayName,
+                    'emailaddress' => $user->email
                 ];
                 $this->insert($data);
                 break;

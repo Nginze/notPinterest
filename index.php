@@ -8,16 +8,21 @@ use Cloudinary\Cloudinary;
 
 session_start();
 
-// Defualt session for testing
-// $_SESSION['user'] = ['userid' => 1];
 
 $app = new App;
 $user = new User;
+$pin = new Pin;
+$comment = new Comment;
+$like = new Like;
+$reply = new Reply;
+$savedPin = new SavedPin;
+$userFollow = new UserFollow;
+$profile = $user->getCurrentUserProfile();
 
+/**Tabs and Pages */
 
 $app->router->get("/", function () {
-  $user = new User;
-  $profile = $user->getCurrentUserProfile();
+  global $user;
   require_once __DIR__ . "./app/views/feed/index.php";
 });
 
@@ -31,18 +36,47 @@ $app->router->get("/following", function () {
 
 
 $app->router->get("/myprofile", function () {
-  $user = new User;
-  $profile = $user->getCurrentUserProfile();
+  global $user, $profile;
   require_once __DIR__ . "./app/views/profile/userprofile.php";
 });
 
+$app->router->get("/pin", function () {
+  global $pin, $comment, $like, $reply, $savedPin, $userFollow, $user, $profile;
+  $pinid = $_GET['pinid'];
+  $post = $pin->getPinById($pinid);
+  $mycomments = $comment->getComments($pinid);
+  $comments = array();
+  $post['savemap'] = $savedPin->getSaveMap($pinid);
+  $post['followmap'] = $userFollow->getFollowMap();
+  foreach ($mycomments as $comment) {
+    $comment['likemap'] = $like->getLikeMap($comment['commentid']);
+    $comment['hasreplies'] = count($reply->getReplies($comment['commentid']));
+    if (!$comment['likemap']) {
+      $comment['likemap'] = array();
+    }
+    array_push($comments, $comment);
+  }
+
+  if (!$post['savemap']) {
+    $post['savemap'] = array();
+  }
+  if (!$post['followmap']) {
+    $post['followmap'] = array();
+  }
+
+  require_once __DIR__ . "./app/views/pin/detailed.php";
+  // echo "<pre>";
+  // echo var_dump($post);
+  // echo var_dump($comments);
+  // echo "</pre>";
+});
+
 $app->router->get("/pin/detail", function () {
-  $user = new User;
-  $profile = $user->getCurrentUserProfile();
+  global $user, $profile;
   require_once __DIR__ . "./app/views/pin/detailed.php";
 });
 
-//Authentication Routes
+/** Authentication GET(Pages) Routes */
 
 $app->router->get("/login", function () {
   require_once __DIR__ . "./app/views/auth/login.php";
@@ -52,29 +86,30 @@ $app->router->get("/signup", function () {
   require_once __DIR__ . "./app/views/auth/signup.php";
 });
 
-$app->router->post("/login", function(){
-  $user = new User;
+/** Authentication AJAX Routes */
+
+$app->router->post("/login", function () {
+  global $user;
   $success = $user->login($_POST);
-  if($success){
+  if ($success) {
     header('HTTP/1.1 200 OK');
     exit();
-  }else{
+  } else {
     header('HTTP/1.1 500');
     exit();
   }
 });
 
-$app->router->post("/signup", function(){
-  $user = new User;
+$app->router->post("/signup", function () {
+  global $user;
   $success = $user->signUp($_POST);
-  if($success){
+  if ($success) {
     header('HTTP/1.1 200 OK');
     exit();
-  }else{
+  } else {
     header('HTTP/1.1 500');
     exit();
   }
-
 });
 
 $app->router->get("/auth/github", function () {
@@ -86,21 +121,63 @@ $app->router->get("/auth/google", function () {
 });
 
 
-//App Routes
+/** App AJAX Handlers GET */
+
 $app->router->get("/home", function () {
-  $pin = new Pin;
+  global $pin;
   $q = $pin->getUserFeed(1);
   header('Content-Type: application/json; charset=utf-8');
   echo json_encode($q->fetchAll(PDO::FETCH_ASSOC));
 });
 
-$app->router->get("/create", function () {
-  require_once __Dir__ . "./app/views/pin/create.php";
+$app->router->get("/replies", function () {
+  global $reply;
+  $commentid = $_GET['commentid'];
+  header('Content-Type: application/json; charset=utf-8');
+  echo json_encode($reply->getReplies($commentid));
 });
 
-$app->router->post("/create", function () {
-  $data = $_POST;
+$app->router->get("/profile", function () {
+  global $user;
+  header('Content-Type: application/json; charset=utf-8');
+  echo json_encode($user->getCurrentUserProfile());
+});
+
+$app->router->get("/saved", function () {
+  global $savedPin;
+  header('Content-Type: application/json; charset=utf-8');
+  echo json_encode($savedPin->getCurrentUserSaved());
+});
+
+$app->router->get("/created", function () {
+  global $pin;
+  header('Content-Type: application/json; charset=utf-8');
+  echo json_encode($pin->getCurrentUserCreated());
+});
+
+
+$app->router->get("/user", function () {
+  global $user;
+  $userid = $_GET['userid'];
+  header('Content-Type: application/json; charset=utf-8');
+  echo json_encode($user->getUserById($userid));
+});
+
+$app->router->get("/search", function () {
+  $query = $_GET['query'];
+  $min_length = 3;
   $pin = new Pin;
+  if (strlen($query) >= $min_length) {
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode($pin->search($query));
+  }
+});
+
+/** App handlers AJAX POST */
+
+$app->router->post("/create", function () {
+  global $pin;
+  $data = $_POST;
   $cloudinary = new Cloudinary(
     [
       'cloud' => [
@@ -125,7 +202,7 @@ $app->router->post("/create", function () {
 });
 
 $app->router->post('/media/upload', function () {
-  $pin = new Pin;
+  global $pin;
   $pinid = $_GET["pinid"];
   echo $pinid;
   $data = [
@@ -134,46 +211,9 @@ $app->router->post('/media/upload', function () {
   $pin->updatePin($pinid, $data);
 });
 
-$app->router->get("/pin", function () {
-  $pinid = $_GET['pinid'];
-  $pin = new Pin;
-  $comment = new Comment;
-  $like = new Like;
-  $reply = new Reply;
-  $savedPin = new SavedPin;
-  $userFollow = new UserFollow;
-  $user = new User;
-  $profile  = $user->getCurrentUserProfile();
-  $post = $pin->getPinById($pinid);
-  $mycomments = $comment->getComments($pinid);
-  $comments = array();
-  $post['savemap'] = $savedPin->getSaveMap($pinid);
-  $post['followmap'] = $userFollow->getFollowMap(); 
-  foreach ($mycomments as $comment) {
-    $comment['likemap'] = $like->getLikeMap($comment['commentid']);
-    $comment['hasreplies'] = count($reply->getReplies($comment['commentid']));
-    if (!$comment['likemap']) {
-      $comment['likemap'] = array();
-    }
-    array_push($comments, $comment);
-  }
-
-  if (!$post['savemap']) {
-    $post['savemap'] = array();
-  }
-  if(!$post['followmap']){
-    $post['followmap'] = array();
-  }
-
-  // echo "<pre>";
-  // echo var_dump($post);
-  // echo var_dump($comments);
-  // echo "</pre>";
-  require_once __DIR__ . "./app/views/pin/detailed.php";
-});
 
 $app->router->post("/like", function () {
-  $like = new Like;
+  global $like;
   if (isset($_POST['commentid'])) {
     $commentid = $_POST['commentid'];
     echo $commentid;
@@ -182,7 +222,7 @@ $app->router->post("/like", function () {
 });
 
 $app->router->post("/comment", function () {
-  $comment = new Comment;
+  global $comment;
   $success = $comment->createComment($_POST);
   if (!$success) {
     echo 'something went wrong';
@@ -193,16 +233,9 @@ $app->router->post("/comment", function () {
   }
 });
 
-$app->router->get("/replies", function () {
-  $commentid = $_GET['commentid'];
-  $reply = new Reply;
-  header('Content-Type: application/json; charset=utf-8');
-  echo json_encode($reply->getReplies($commentid));
-});
 
 $app->router->post("/reply", function () {
-  $reply = new Reply;
-
+  global $reply;
   $success = $reply->createReply($_POST);
   if (!$success) {
     echo ' something went wrong';
@@ -214,7 +247,7 @@ $app->router->post("/reply", function () {
 });
 
 $app->router->post("/pin/save", function () {
-  $savedPin = new SavedPin;
+  global $savedPin;
   $success = $savedPin->checkSave($_POST);
   if (!$success) {
     echo 'something went wrong';
@@ -230,60 +263,14 @@ $app->router->post("/profile/update", function () {
 });
 
 
-$app->router->get("/profile", function () {
-
-  $user = new User;
-  header('Content-Type: application/json; charset=utf-8');
-  echo json_encode($user->getCurrentUserProfile());
-});
-
-$app->router->get("/saved", function () {
-
-  $savedPin = new SavedPin;
-  header('Content-Type: application/json; charset=utf-8');
-  echo json_encode($savedPin->getCurrentUserSaved());
-});
-$app->router->get("/created", function () {
-
-  $pin = new Pin;
-  header('Content-Type: application/json; charset=utf-8');
-  echo json_encode($pin->getCurrentUserCreated());
-});
-
-
-$app->router->get("/user", function () {
-
-  $userid = $_GET['userid'];
-  $user = new User;
-  header('Content-Type: application/json; charset=utf-8');
-  echo json_encode($user->getUserById($userid));
-});
-
 
 $app->router->post("/user/follow", function () {
-  $userFollow= new UserFollow;
+  global $userFollow;
   if (isset($_POST['followerid'])) {
     $followerid = $_POST['followerid'];
     $userFollow->checkFollow($_POST);
   }
 });
 
-
-
-$app->router->get("/search", function () {
-  $query = $_GET['query'];
-  $min_length = 3;
-  $pin = new Pin;
-  if (strlen($query) >= $min_length) {
-    header('Content-Type: application/json; charset=utf-8');
-    echo json_encode($pin->search($query));
-  }
-});
-
-
-
-
-
-
-
+// Run All Routes
 $app->router->run();

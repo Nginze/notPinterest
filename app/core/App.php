@@ -1,12 +1,13 @@
 <?php
 
-class App {
-   
+class App
+{
+
     public $router;
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->router = new Router;
     }
-    
 
 }
