@@ -25,6 +25,6 @@ if ($google->getUserProfile()) {
     echo var_dump($google->getUserProfile());
     echo "<script>
         window.opener.location.replace('/notPinterest/')
-        // window.close()
+        window.close()
     </script>";
 }

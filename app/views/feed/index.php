@@ -33,6 +33,7 @@
             btn_whatsapp: '#24d267',
             btn_twitter: '#1fa0f2',
             txt_primary: "#fefffe",
+            txt_light: "#595e61"
           },
         },
       },
@@ -149,12 +150,43 @@
     </div>
   </div>
   <main class="w-screen h-screen grid grid-cols-5 divide-x divide-slate-800">
-    <section class="min-h-screen max-h-screen p-6 flex flex-col items-start col-span-1 overflow-y-auto overflow-x-hidden">
-      <div class="flex justify-start mx-4 w-full mb-10 cursor-pointer">
-        <img class="w-1/2" src="http://localhost/notPinterest/public/assets/logo.svg" />
+    <section class="min-h-screen max-h-screen flex flex-col items-start col-span-1 overflow-y-auto overflow-x-hidden">
+      <div class="flex items-center justify-start ml-8 mt-5 w-full mb-10 cursor-pointer">
+        <img class="w-1/3 mr-2" src="http://localhost/notPinterest/public/assets/logo.svg" />
       </div>
-      <div class="flex flex-col items-start w-full">
-        <span id="home-tab" class=" tab mb-6 hover:bg-bg_secondary rounded-lg cursor-pointer px-4 py-2 flex flex-row items-center text-2xl w-full h-full justify-center"><ion-icon class="justify-self-start mr-3 text-2xl" name="home"></ion-icon><span class="w-full text-xl ">Home</span></span>
+      <div class="flex flex-col items-start w-full h-full">
+        <ul class="w-full">
+          <li id="home-tab" class="px-4 cursor-pointer py-3 hover:bg-bg_aux w-full">
+            <a href="/notPinterest/" class="flex items-center px-4  text-lg">
+              <box-icon id="home-ico" class="mr-4 opacity-60" color="white" name="home-alt-2"></box-icon>
+              <span id="home-nav" class="opacity-60">Home</span>
+            </a>
+          </li>
+
+          <li class="px-4 py-3 cursor-pointer hover:bg-bg_aux w-full">
+            <a href="/notPinterest/" class="flex items-center px-4 text-lg ">
+              <box-icon id="following-ico" class="mr-4 opacity-60" color="white" name="group"></box-icon>
+              <span id="following-nav" class="opacity-60">Following</span>
+            </a>
+          </li>
+
+          <li class="px-4 py-3 cursor-pointer hover:bg-bg_aux w-full">
+            <a href="/notPinterest/" class="flex items-center px-4 text-lg">
+              <box-icon id="recent-ico" class="mr-4 opacity-60" color="white" name="time"></box-icon>
+              <span id="recents-nav" class="opacity-60">Recents</span>
+            </a>
+          </li>
+          <li class="mt-10 mb-4 flex items-center px-8 text-lg">
+            <span class="text-md font-semibold text-bg_secondary opacity-60">Insights</span>
+          </li>
+          <li class="px-4 py-3 cursor-pointer hover:bg-bg_aux w-full">
+            <a class="flex items-center px-4 text-lg">
+              <box-icon id="notifications-ico" class="mr-4 opacity-60" color="white" name="bell"></box-icon>
+              <span id="notifications-nav" class="opacity-60">Notifications</span>
+            </a>
+          </li>
+        </ul>
+        <!-- <span id="home-tab" class=" tab mb-6 hover:bg-bg_secondary rounded-lg cursor-pointer px-4 py-2 flex flex-row items-center text-2xl w-full h-full justify-center"><ion-icon class="justify-self-start mr-3 text-2xl" name="home"></ion-icon><span class="w-full text-xl ">Home</span></span>
 
         <span id="recent-tab" class="tab mb-6 hover:bg-bg_secondary rounded-lg cursor-pointer px-4 py-2 flex flex-row items-center text-2xl w-full justify-center"><ion-icon class="justify-self-start mr-3 text-2xl" name="time-outline"></ion-icon><span class="w-full text-xl">Recent</span></span>
 
@@ -164,25 +196,26 @@
         <span class="text-xl px-4 py-2 mb-6 text-bg_secondary font-medium">Insights</span>
 
         <span class="px-4 py-2 hover:bg-bg_secondary rounded-lg cursor-pointer rounded-xl mb-10 flex flex-row items-center text-2xl w-full justify-center"><ion-icon class="justify-self-start mr-3 text-2xl" name="notifications"></ion-icon><span class="w-full text-xl">Notifications</span></span>
-      </div>
-      <div id="profile" class="w-full h-full flex flex-col justify-end justify-self-end">
-        <div class="flex flex-row items-center justify-evenly bg-bg_aux rounded-2xl h-20 px-4 cursor-pointer hover:bg-btn_hover">
-          <img referrerpolicy="no-referrer" class="w-12 h-12 mr-2 object-contain rounded-full" src=<?php echo $profile['avatarurl'] ?> />
-          <div class="mr-3 w-2/3">
-            <span class="font-semibold text-sm"><?php echo $profile['username'] ?></span>
-            <span class="opacity-30 text-sm font-semibold"><?php echo $profile['emailaddress'] ?></span>
-          </div>
-          <div class="w-1/10">
-            <ion-icon name="chevron-forward"></ion-icon>
+      </div> -->
+        <div id="profile" class="w-full px-4 h-full flex flex-col justify-end justify-self-end">
+          <div class="flex flex-row items-center justify-evenly bg-bg_aux rounded-2xl h-20 px-4 mb-4 cursor-pointer hover:bg-btn_hover">
+            <img referrerpolicy="no-referrer" class="w-12 h-12 mr-2 object-contain rounded-full" src=<?php echo $profile['avatarurl'] ?> />
+            <div class="mr-3 w-2/3 flex flex-col items-start">
+              <span class="font-semibold text-sm"><?php echo $profile['username'] ?></span>
+              <span class="opacity-30 text-sm font-semibold"><?php echo $profile['emailaddress'] ?></span>
+            </div>
+            <div class="w-1/10">
+              <ion-icon name="chevron-forward"></ion-icon>
+            </div>
           </div>
         </div>
-      </div>
     </section>
     <section class=" max-h-full w-full col-span-4 px-8 overflow-auto relative bg-bg_primary">
 
       <div class="flex flex-row items-center justify-center w-full bg-bg_primary py-4 sticky top-0 z-10">
         <div class="w-full relative mr-4">
-          <ion-icon class="absolute top-3.5 text-xl left-3" name="search-outline"></ion-icon>
+          <box-icon class="absolute top-3 text-xl left-3" name="search" color="white"></box-icon>
+          <!-- <ion-icon class="absolute top-3.5 text-xl left-3" name="search-outline"></ion-icon> -->
           <input id="search-input" class="bg-bg_secondary py-3 px-12  w-full rounded-lg outline-none" type="text" placeholder="Search your pins" />
 
           <div id="result-container" style="display:none" class="w-full h-96 rounded-lg absolute bg-bg_aux z-50 top-19 mt-3">
@@ -191,15 +224,17 @@
         </div>
         <div class="flex flex-row items-center">
           <button class="w-12 h-12 mr-4 bg-btn_secondary rounded-lg text-xl text-black flex items-center justify-center">
-            <ion-icon name="filter-outline"></ion-icon>
+            <box-icon name="sort" color="black"></box-icon>
+            <!-- <ion-icon name="filter-outline"></ion-icon> -->
           </button>
           <button id="create" class="w-12 h-12 bg-btn_primary rounded-lg text-xl flex items-center justify-center">
-            <ion-icon name="add-outline"></ion-icon>
+            <box-icon name="plus" color="white"></box-icon>
+            <!-- <ion-icon name="add-outline"></ion-icon> -->
           </button>
         </div>
       </div>
 
-      <div id="pin-container" class="min-h-full py-10 px-3 columns-2 md:columns-3 lg:columns-5 relative">
+      <div id="pin-container" class="min-h-full px-3 columns-2 md:columns-3 lg:columns-5 relative">
         <span id="feed-loader" class="loader absolute left-1/2"></span>
       </div>
     </section>
