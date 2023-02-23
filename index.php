@@ -22,7 +22,7 @@ $profile = $user->getCurrentUserProfile();
 /**Tabs and Pages */
 
 $app->router->get("/", function () {
-  global $user;
+  global $user, $profile;
   require_once __DIR__ . "./app/views/feed/index.php";
 });
 
@@ -124,10 +124,21 @@ $app->router->get("/auth/google", function () {
 /** App AJAX Handlers GET */
 
 $app->router->get("/home", function () {
-  global $pin;
+  global $pin, $savedPin;
   $q = $pin->getUserFeed(1);
+  $feed = $q->fetchAll(PDO::FETCH_ASSOC);
+  $refinedFeed = array();
+  foreach ($feed as $pin) {
+    $pin['savedmap'] = $savedPin->getSaveMap($pin['pinid']);
+    if (!$pin['savedmap']) {
+      $pin['savedmap'] = array();
+    }
+    array_push($refinedFeed, $pin);
+  }
+  // echo "<pre>"; echo var_dump($feed);
+  // echo "</pre>";
   header('Content-Type: application/json; charset=utf-8');
-  echo json_encode($q->fetchAll(PDO::FETCH_ASSOC));
+  echo json_encode(array(array("currentuser" => $_SESSION['user']['userid']),$refinedFeed));
 });
 
 $app->router->get("/replies", function () {

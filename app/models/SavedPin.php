@@ -74,7 +74,7 @@ class SavedPin extends Model
             $statement = $this->conn->prepare($query);
             $statement->bindValue(":id", $pinid);
             $statement->execute();
-            return $statement->fetch(PDO::FETCH_ASSOC);
+            return $statement->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             echo "Error: " . $e->getMessage();
             return false;
