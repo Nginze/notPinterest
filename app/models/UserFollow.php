@@ -45,9 +45,9 @@ class UserFollow extends Model
         $statement->execute();
         $statement->setFetchMode(PDO::FETCH_ASSOC);
         if ($statement->rowCount() > 0) {
-           return $this->deleteFollow($followerid);
+            return $this->deleteFollow($followerid);
         } else {
-           return $this->createFollow($follow);
+            return $this->createFollow($follow);
         }
     }
 
@@ -59,6 +59,20 @@ class UserFollow extends Model
             $statement->bindValue(":id", $this->getUserId());
             $statement->execute();
             return $statement->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            return false;
+        }
+    }
+
+    public function getCurrentUserFollowerCount()
+    {
+        try {
+            $query = "SELECT count(userid) as followercount FROM $this->tableName WHERE followerid = :id";
+            $statement = $this->conn->prepare($query);
+            $statement->bindValue(":id", $this->getUserId());
+            $statement->execute();
+            return $statement->fetch();
         } catch (PDOException $e) {
             echo "Error: " . $e->getMessage();
             return false;

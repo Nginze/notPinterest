@@ -106,14 +106,17 @@
           <span class="w-full text-sm">People visiting your profile will see the following info</span>
         </div>
         <div class="flex items-center mb-6">
-          <img class="w-16 h-16 rounded-full mr-4" src="https://minecraftpfp.com/PFP/elii_bx.png" />
-          <button class="bg-bg_secondary font-semibold rounded-full px-3 py-2">Change</button>
+          <img id="profile-tag" class="w-16 h-16 rounded-full mr-4" src=<?php echo $profile['avatarurl'] ?> />
+          <label class=" cursor-pointer bg-bg_secondary font-semibold rounded-full px-3 py-2">
+            Change
+            <input id="update-file" type="file" style="display:none"/>
+          </label>
         </div>
         <div>
-          <input class="font-semibold w-full rounded-lg mb-6 px-4 py-4 bg-bg_secondary outline-none border-none" placeholder="Username" />
-          <input class="font-semibold w-full rounded-lg mb-6 px-4 py-4 bg-bg_secondary outline-none border-none" placeholder="Display Name" />
-          <input class="font-semibold w-full rounded-lg mb-6 px-4 py-4 bg-bg_secondary outline-none border-none" placeholder="Bio" />
-          <button class="bg-btn_primary px-4 py-2 rounded-3xl font-semibold">Save</button>
+          <input id="email-input" class="font-semibold w-full rounded-lg mb-6 px-4 py-4 bg-bg_secondary outline-none border-none" value=<?php echo $profile['emailaddress']?> placeholder="Email Address" disabled />
+          <input id="username-input" class="font-semibold w-full rounded-lg mb-6 px-4 py-4 bg-bg_secondary outline-none border-none" value=<?php echo $profile['username']?> placeholder="Username" />
+          <input id="bio-input" class="font-semibold w-full rounded-lg mb-6 px-4 py-4 bg-bg_secondary outline-none border-none" placeholder="Bio" />
+          <button id="update-profile-btn" class="bg-btn_primary px-4 py-2 rounded-3xl font-semibold">Save</button>
         </div>
       </div>
     </div>
@@ -233,7 +236,7 @@
       </div> -->
         <div id="profile" class="w-full px-4 h-full flex flex-col justify-end justify-self-end">
           <div class="flex flex-row items-center justify-evenly bg-bg_aux rounded-2xl h-20 px-4 mb-4 cursor-pointer hover:bg-btn_hover">
-            <img referrerpolicy="no-referrer" class="w-12 h-12 mr-2 object-contain rounded-full" src=<?php echo $profile['avatarurl'] ?> />
+            <img referrerpolicy="no-referrer" class="w-12 h-12 mr-2 object-cover rounded-full" src=<?php echo $profile['avatarurl'] ?> />
             <div class="mr-3 w-2/3 flex flex-col items-start">
               <span class="font-semibold text-sm"><?php echo $profile['username'] ?></span>
               <span class="opacity-30 text-sm font-semibold"><?php echo $profile['emailaddress'] ?></span>
@@ -244,8 +247,29 @@
           </div>
         </div>
     </section>
-    <section class=" max-h-full w-full col-span-4 py-3 px-8 overflow-auto">
-      <div class="flex flex-row items-center justify-center w-full bg-bg_primary py-4">
+    <section class=" max-h-full w-full col-span-4 px-8 overflow-auto">
+      <div class="flex flex-row items-center justify-center w-full bg-bg_primary py-4 sticky top-0 z-10">
+        <div class="w-full relative mr-4">
+          <box-icon class="absolute top-3 text-xl left-3" name="search" color="white"></box-icon>
+          <!-- <ion-icon class="absolute top-3.5 text-xl left-3" name="search-outline"></ion-icon> -->
+          <input id="search-input" class="bg-bg_secondary py-3 px-12  w-full rounded-lg outline-none" type="text" placeholder="Search your pins" />
+
+          <div id="result-container" style="display:none" class="w-full h-96 rounded-lg absolute bg-bg_aux z-50 top-19 mt-3">
+
+          </div>
+        </div>
+        <div class="flex flex-row items-center">
+          <button class="w-12 h-12 mr-4 bg-btn_secondary rounded-lg text-xl text-black flex items-center justify-center">
+            <box-icon name="sort" color="black"></box-icon>
+            <!-- <ion-icon name="filter-outline"></ion-icon> -->
+          </button>
+          <button id="create" class="w-12 h-12 bg-btn_primary rounded-lg text-xl flex items-center justify-center">
+            <box-icon name="plus" color="white"></box-icon>
+            <!-- <ion-icon name="add-outline"></ion-icon> -->
+          </button>
+        </div>
+      </div>
+      <!-- <div class="flex flex-row items-center justify-center w-full bg-bg_primary py-4">
         <div class="w-full relative mr-4">
           <ion-icon class="absolute top-3.5 text-xl left-3" name="search-outline"></ion-icon>
           <input id="search-input" class="bg-bg_secondary py-3 px-12  w-full rounded-lg outline-none" type="text" placeholder="Search your pins" />
@@ -262,7 +286,7 @@
             <ion-icon name="add-outline"></ion-icon>
           </button>
         </div>
-      </div>
+      </div> -->
 
       <div id="profile-container" class="min-h-full w-full py-10 px-3 flex flex-col items-center ">
         <div id="mypins-null" class="flex flex-col items-center w-full">

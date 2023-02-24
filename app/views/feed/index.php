@@ -199,7 +199,7 @@
       </div> -->
         <div id="profile" class="w-full px-4 h-full flex flex-col justify-end justify-self-end">
           <div class="flex flex-row items-center justify-evenly bg-bg_aux rounded-2xl h-20 px-4 mb-4 cursor-pointer hover:bg-btn_hover">
-            <img referrerpolicy="no-referrer" class="w-12 h-12 mr-2 object-contain rounded-full" src=<?php echo $profile['avatarurl'] ?> />
+            <img referrerpolicy="no-referrer" class="w-12 h-12 mr-2 object-cover rounded-full" src=<?php echo $profile['avatarurl'] ?> />
             <div class="mr-3 w-2/3 flex flex-col items-start">
               <span class="font-semibold text-sm"><?php echo $profile['username'] ?></span>
               <span class="opacity-30 text-sm font-semibold"><?php echo $profile['emailaddress'] ?></span>

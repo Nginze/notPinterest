@@ -59,9 +59,9 @@ class User extends Model
         }
     }
 
-    public function updateUser($id, $data)
+    public function updateUser($data)
     {
-        return $this->update($id, $data, 'userid');
+        return $this->update($this->getUserId(), $data, 'userid');
     }
 
     public function deleteUser()

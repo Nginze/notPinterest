@@ -19,6 +19,15 @@ $savedPin = new SavedPin;
 $userFollow = new UserFollow;
 $profile = $user->getCurrentUserProfile();
 
+$cloudinary = new Cloudinary(
+  [
+    'cloud' => [
+      'cloud_name' => 'chakra-me',
+      'api_key'    => '298514965965219',
+      'api_secret' => 'xtUkjeTX0Rgji31-w9md9iRwlw0',
+    ],
+  ]
+);
 /**Tabs and Pages */
 
 $app->router->get("/", function () {
@@ -138,7 +147,7 @@ $app->router->get("/home", function () {
   // echo "<pre>"; echo var_dump($feed);
   // echo "</pre>";
   header('Content-Type: application/json; charset=utf-8');
-  echo json_encode(array(array("currentuser" => $_SESSION['user']['userid']),$refinedFeed));
+  echo json_encode(array(array("currentuser" => $_SESSION['user']['userid']), $refinedFeed));
 });
 
 $app->router->get("/replies", function () {
@@ -149,21 +158,41 @@ $app->router->get("/replies", function () {
 });
 
 $app->router->get("/profile", function () {
-  global $user;
+  global $user, $userFollow;
+  $myprofile = $user->getCurrentUserProfile();
+  array_push($myprofile, $userFollow->getCurrentUserFollowerCount());
   header('Content-Type: application/json; charset=utf-8');
-  echo json_encode($user->getCurrentUserProfile());
+  echo json_encode($myprofile);
 });
 
 $app->router->get("/saved", function () {
   global $savedPin;
+  $feed = $savedPin->getCurrentUserSaved();
+  $refinedFeed = array();
+  foreach ($feed as $pin) {
+    $pin['savedmap'] = $savedPin->getSaveMap($pin['pinid']);
+    if (!$pin['savedmap']) {
+      $pin['savedmap'] = array();
+    }
+    array_push($refinedFeed, $pin);
+  }
   header('Content-Type: application/json; charset=utf-8');
-  echo json_encode($savedPin->getCurrentUserSaved());
+  echo json_encode(array(array("currentuser" => $_SESSION['user']['userid']), $refinedFeed));
 });
 
 $app->router->get("/created", function () {
-  global $pin;
+  global $pin, $savedPin;
+  $feed = $pin->getCurrentUserCreated();
+  $refinedFeed = array();
+  foreach ($feed as $pin) {
+    $pin['savedmap'] = $savedPin->getSaveMap($pin['pinid']);
+    if (!$pin['savedmap']) {
+      $pin['savedmap'] = array();
+    }
+    array_push($refinedFeed, $pin);
+  }
   header('Content-Type: application/json; charset=utf-8');
-  echo json_encode($pin->getCurrentUserCreated());
+  echo json_encode(array(array("currentuser" => $_SESSION['user']['userid']), $refinedFeed));
 });
 
 
@@ -187,17 +216,8 @@ $app->router->get("/search", function () {
 /** App handlers AJAX POST */
 
 $app->router->post("/create", function () {
-  global $pin;
+  global $pin, $cloudinary;
   $data = $_POST;
-  $cloudinary = new Cloudinary(
-    [
-      'cloud' => [
-        'cloud_name' => 'chakra-me',
-        'api_key'    => '298514965965219',
-        'api_secret' => 'xtUkjeTX0Rgji31-w9md9iRwlw0',
-      ],
-    ]
-  );
   $pinid = $pin->createPin($data);
 
   $cloudinary->uploadApi()->upload($data['imgbase64'], [
@@ -271,6 +291,22 @@ $app->router->post("/pin/save", function () {
 
 
 $app->router->post("/profile/update", function () {
+  global $user, $cloudinary;
+  $key = md5(microtime().rand());
+  $cloudinary->uploadApi()->upload($_POST['avatarurl'], [
+    'public_id' => $key 
+  ]);
+
+  $imgurl = $cloudinary->image($key)->toUrl();
+  $_POST['avatarurl'] = $imgurl; 
+  $success = $user->updateUser($_POST);
+  if (!$success) {
+    echo 'something went wrong';
+    header(500);
+  } else {
+    echo 'profile updated';
+    header(200);
+  }
 });
 
 
