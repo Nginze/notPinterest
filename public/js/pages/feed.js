@@ -1,10 +1,13 @@
+let pageCursor = 0 
+
 const getUserFeed = () => {
   $("#feed-loader").show();
   $.ajax({
-    url: "/notPinterest/home",
+    url: `/notPinterest/home?page=${pageCursor}`,
     type: "GET",
     success: data => {
       $("#feed-loader").hide();
+      pageCursor += 1
       console.log(data);
       data[1].map(pin => {
         renderPin(pin, data[0].currentuser);
@@ -16,6 +19,25 @@ const getUserFeed = () => {
   });
 };
 
+const loadMore = () => {
+  $.ajax({
+    url: `/notPinterest/home?page=${pageCursor}`,
+    type: "GET",
+    success: data => {
+      pageCursor += 1
+      if (data[1].length == 0){
+        $("#more-loader").hide()
+      }
+      console.log(data);
+      data[1].map(pin => {
+        renderPin(pin, data[0].currentuser);
+      });
+    },
+    error: err => {
+      alert("something went wrong fetching data");
+    },
+  });
+}
 const renderPin = (pin, currentUser) => {
   const hasSaved = pin.savedmap.map(obj => obj.saverid).includes(currentUser);
   $("#pin-container").append(
@@ -79,6 +101,14 @@ const savePost = (pinid, e) => {
   });
 };
 
+const pinObserver = () => {
+  const intersectionObserver = new IntersectionObserver(entries => {
+    if(entries[0].intersectionRatio <= 0) return;
+    console.log("loading more pins..")
+    loadMore()
+  })
+  intersectionObserver.observe(document.querySelector("#more-loader"))
+}
 const Eventhandler = () => {
   $("body").on("click", ".clickable", e => {
     e.stopPropagation();
@@ -98,6 +128,7 @@ const Eventhandler = () => {
 $(document).ready(() => {
   getUserFeed();
   Eventhandler();
+  pinObserver();
 });
 
 // $.get("/notPinterest/home", (data, status) => {

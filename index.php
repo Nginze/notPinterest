@@ -57,8 +57,19 @@ $app->router->get("/pin", function () {
   $comments = array();
   $post['savemap'] = $savedPin->getSaveMap($pinid);
   $post['followmap'] = $userFollow->getFollowMap();
+  $post['followcount'] = $userFollow->getUserFollowCount($post['userid']);
   foreach ($mycomments as $comment) {
+    $refinedlikemap = array();
     $comment['likemap'] = $like->getLikeMap($comment['commentid']);
+    if (!$comment['likemap']) {
+      !$comment['likemap'] = array();
+    }
+    if (count($comment['likemap']) > 0) {
+      foreach ($comment['likemap'] as $value) {
+        array_push($refinedlikemap, $value);
+      }
+    }
+    $comment['likemap'] = $refinedlikemap;
     $comment['hasreplies'] = count($reply->getReplies($comment['commentid']));
     if (!$comment['likemap']) {
       $comment['likemap'] = array();
@@ -73,6 +84,17 @@ $app->router->get("/pin", function () {
     $post['followmap'] = array();
   }
 
+  $refinedsavemap = array();
+  $refinedfollowmap = array();
+  foreach ($post['savemap'] as $key => $value) {
+    array_push($refinedsavemap, $value['saverid']);
+  }
+  $followmap = $post['followmap'];
+  foreach ($followmap as $key => $value) {
+    array_push($refinedfollowmap, $value);
+  }
+  $post['followmap'] = $refinedfollowmap;
+  $post['savemap'] = $refinedsavemap;
   require_once __DIR__ . "./app/views/pin/detailed.php";
   // echo "<pre>";
   // echo var_dump($post);
@@ -134,7 +156,7 @@ $app->router->get("/auth/google", function () {
 
 $app->router->get("/home", function () {
   global $pin, $savedPin;
-  $q = $pin->getUserFeed(1);
+  $q = $pin->getUserFeed($_GET['page']);
   $feed = $q->fetchAll(PDO::FETCH_ASSOC);
   $refinedFeed = array();
   foreach ($feed as $pin) {
@@ -218,9 +240,11 @@ $app->router->get("/search", function () {
 $app->router->post("/create", function () {
   global $pin, $cloudinary;
   $data = $_POST;
+  $imgurl = $data['imgurl'];
+  unset($data['imgurl']);
   $pinid = $pin->createPin($data);
 
-  $cloudinary->uploadApi()->upload($data['imgbase64'], [
+  $cloudinary->uploadApi()->upload($imgurl, [
     "notification_url" => "http://localhost/media/upload?pinid=" . $pinid,
     'public_id' => $pinid
   ]);
@@ -247,8 +271,14 @@ $app->router->post("/like", function () {
   global $like;
   if (isset($_POST['commentid'])) {
     $commentid = $_POST['commentid'];
-    echo $commentid;
-    $like->checkLike($commentid);
+    $success = $like->checkLike($_POST);
+    if ($success) {
+      header('HTTP/1.1 200 OK');
+      exit();
+    } else {
+      header('HTTP/1.1 500');
+      exit();
+    }
   }
 });
 
@@ -292,13 +322,13 @@ $app->router->post("/pin/save", function () {
 
 $app->router->post("/profile/update", function () {
   global $user, $cloudinary;
-  $key = md5(microtime().rand());
+  $key = md5(microtime() . rand());
   $cloudinary->uploadApi()->upload($_POST['avatarurl'], [
-    'public_id' => $key 
+    'public_id' => $key
   ]);
 
   $imgurl = $cloudinary->image($key)->toUrl();
-  $_POST['avatarurl'] = $imgurl; 
+  $_POST['avatarurl'] = $imgurl;
   $success = $user->updateUser($_POST);
   if (!$success) {
     echo 'something went wrong';

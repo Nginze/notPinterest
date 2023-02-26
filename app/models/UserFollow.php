@@ -5,7 +5,7 @@ class UserFollow extends Model
     public function __construct()
     {
         $db = new Database;
-        $this->tableName = "userFollow";
+        $this->tableName = "userfollow";
         $this->conn = $db->connect();
     }
 
@@ -34,20 +34,24 @@ class UserFollow extends Model
     }
     public function checkFollow($follow)
     {
-        $userid = $this->getUserId();
-        $followerid = $follow['followerid'];
-        $query = "SELECT * 
-                  FROM $this->tableName 
-                  WHERE followerid = :followerid and userid= :userid";
-        $statement = $this->conn->query($query);
-        $statement->bindValue(":followerid", $followerid);
-        $statement->bindValue(":userid", $userid);
-        $statement->execute();
-        $statement->setFetchMode(PDO::FETCH_ASSOC);
-        if ($statement->rowCount() > 0) {
-            return $this->deleteFollow($followerid);
-        } else {
-            return $this->createFollow($follow);
+        try {
+            $userid = $this->getUserId();
+            $followerid = $follow['followerid'];
+            $query = "SELECT * FROM $this->tableName WHERE followerid = $followerid AND userid = $userid";
+            $statement = $this->conn->query($query);
+            $statement->bindValue(":followerid", $followerid);
+            $statement->bindValue(":userid", $userid);
+            $statement->execute();
+            $statement->setFetchMode(PDO::FETCH_ASSOC);
+            if ($statement->rowCount() > 0) {
+                return $this->deleteFollow($followerid);
+            } else {
+                return $this->createFollow($follow);
+            }
+        } catch (PDOException $e) {
+
+            echo "Error: " . $e->getMessage();
+            return false;
         }
     }
 
@@ -71,6 +75,20 @@ class UserFollow extends Model
             $query = "SELECT count(userid) as followercount FROM $this->tableName WHERE followerid = :id";
             $statement = $this->conn->prepare($query);
             $statement->bindValue(":id", $this->getUserId());
+            $statement->execute();
+            return $statement->fetch();
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            return false;
+        }
+    }
+
+    public function getUserFollowCount($userid)
+    {
+        try {
+            $query = "SELECT count(userid) as followercount FROM $this->tableName WHERE followerid = :id";
+            $statement = $this->conn->prepare($query);
+            $statement->bindValue(":id", $userid);
             $statement->execute();
             return $statement->fetch();
         } catch (PDOException $e) {

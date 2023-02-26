@@ -109,12 +109,12 @@
           <img id="profile-tag" class="w-16 h-16 rounded-full mr-4" src=<?php echo $profile['avatarurl'] ?> />
           <label class=" cursor-pointer bg-bg_secondary font-semibold rounded-full px-3 py-2">
             Change
-            <input id="update-file" type="file" style="display:none"/>
+            <input id="update-file" type="file" style="display:none" />
           </label>
         </div>
         <div>
-          <input id="email-input" class="font-semibold w-full rounded-lg mb-6 px-4 py-4 bg-bg_secondary outline-none border-none" value=<?php echo $profile['emailaddress']?> placeholder="Email Address" disabled />
-          <input id="username-input" class="font-semibold w-full rounded-lg mb-6 px-4 py-4 bg-bg_secondary outline-none border-none" value=<?php echo $profile['username']?> placeholder="Username" />
+          <input id="email-input" class="font-semibold w-full rounded-lg mb-6 px-4 py-4 bg-bg_secondary outline-none border-none" value=<?php echo $profile['emailaddress'] ?> placeholder="Email Address" disabled />
+          <input id="username-input" class="font-semibold w-full rounded-lg mb-6 px-4 py-4 bg-bg_secondary outline-none border-none" value=<?php echo $profile['username'] ?> placeholder="Username" />
           <input id="bio-input" class="font-semibold w-full rounded-lg mb-6 px-4 py-4 bg-bg_secondary outline-none border-none" placeholder="Bio" />
           <button id="update-profile-btn" class="bg-btn_primary px-4 py-2 rounded-3xl font-semibold">Save</button>
         </div>
@@ -160,8 +160,8 @@
       <div id="close-create" class="absolute top-3 right-2 text-3xl">
         <button><ion-icon name="close-outline"></ion-icon></button>
       </div>
-      <div class="border border-dashed rounded-lg bg-bg_secondary border-gray-500 relative mt-8 mb-6 py-2">
-        <input type="file" multiple class="cursor-pointer relative block opacity-0 w-full h-full p-20 z-50">
+      <div id="upload-info" class="border border-dashed rounded-lg bg-bg_secondary border-gray-500 relative mt-8 mb-6 py-2">
+        <input type="file" class="upload cursor-pointer relative block opacity-0 w-full h-full p-20 z-50">
         <div class="text-center p-10 absolute top-0 right-0 left-0 m-auto">
           <div class="flex flex-col items-center mb-4">
             <iconify-icon class="opacity-30 mb-3" icon="material-symbols:upload-file-outline" width="60"></iconify-icon>
@@ -177,10 +177,11 @@
       </div>
       <div class="w-full">
         <form class="w-full flex flex-col items-end">
-          <input class="bg-bg_secondary text-white outline-none px-3 py-2 mb-6 w-full rounded-lg" type="text" placeholder="Add your title" />
-          <input class="bg-bg_secondary text-white outline-none px-3 py-2 mb-6 w-full rounded-lg" type="text" placeholder="Tell everyone what your pin is about" />
-          <input class="bg-bg_secondary text-white outline-none px-3 py-2 mb-5 w-full rounded-lg" type="text" placeholder="Add destination link (Optional)" />
-          <button class="bg-btn_primary px-4 py-2 rounded-3xl font-semibold">Save</button>
+          <input id="pintitle-input" class="bg-bg_secondary text-white outline-none px-3 py-2 mb-6 w-full rounded-lg" type="text" placeholder="Add your title" />
+          <input id="pindesc-input" class="bg-bg_secondary text-white outline-none px-3 py-2 mb-6 w-full rounded-lg" type="text" placeholder="Tell everyone what your pin is about" />
+          <input id="pinlink-input" class="bg-bg_secondary text-white outline-none px-3 py-2 mb-5 w-full rounded-lg" type="text" placeholder="Add destination link (Optional)" />
+          <img id="uploaded-img" style="display:none" class="w-24 h-16 mb-4 object-cover align-start" />
+          <button id="create-pin-btn" class="bg-btn_primary px-4 py-2 rounded-3xl font-semibold">Create</button>
         </form>
       </div>
     </div>

@@ -42,19 +42,6 @@ $(document).ready(() => {
     );
   });
 
-  // $(".like-btn").mouseover(function () {
-  //   if($(this).find('.like-icon').attr("name") == "heart"){
-  //     $(this).find('.like-icon').attr("name", "heart-outline")
-  //   }else{
-  //     $(this).find('.like-icon').attr("name", "heart")
-  //   }
-  //   // $(this).find(".like-outline").hide();
-  //   // $(this).find(".like-filled").show();
-  // });
-  // $(".like-btn").mouseout(function () {
-  //   $(this).find(".like-outline").show();
-  //   $(this).find(".like-filled").hide();
-  // });
 
   $(".like-btn").click(function (e) {
     const commentid = $(this).data("id");
@@ -98,11 +85,11 @@ $(document).ready(() => {
       data.map(e => {
         $(evnt.target).parent().find(".replies-container").first().append(`
 
-          <div id="comment" class="flex items-start mb-4">
+          <div id="comment" class="flex items-start mb-4 w-full">
               <div class="w-8 h-8 mr-4">
                   <img class="w-full h-full rounded-full object-cover" src=${e.avatarurl} />
               </div>
-              <div id="comment-content" class="w-4/5 flex flex-col items-start">
+              <div id="comment-content" class="w-full flex flex-col items-start">
                   <div class="mb-2">
                       <span>${e.displayname}</span>
                       <p class="text-txt_light font-semibold">${e.content}</p>
@@ -115,7 +102,7 @@ $(document).ready(() => {
                       <div class="reply-emoji-btn absolute right-2  w-10 h-10 top-0 flex items-center justify-center  text-2xl text-center rounded-full">
                           😀
                       </div>
-                      <input class="reply-input font-semibold w-full rounded-3xl px-4 py-2 bg-bg_secondary outline-none border-none" placeholder="Reply to comment" />
+                      <input class="reply-input font-semibold w-full rounded-3xl px-20 py-2 bg-bg_secondary outline-none border-none" placeholder="Reply to comment" />
                   </div>
               </div>
       `);

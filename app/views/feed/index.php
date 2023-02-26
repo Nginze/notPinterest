@@ -210,7 +210,7 @@
           </div>
         </div>
     </section>
-    <section class=" max-h-full w-full col-span-4 px-8 overflow-auto relative bg-bg_primary">
+    <section id="feed-container" class="max-h-full w-full col-span-4 px-8 overflow-auto relative bg-bg_primary">
 
       <div class="flex flex-row items-center justify-center w-full bg-bg_primary py-4 sticky top-0 z-10">
         <div class="w-full relative mr-4">
@@ -237,6 +237,7 @@
       <div id="pin-container" class="min-h-full px-3 columns-2 md:columns-3 lg:columns-5 relative">
         <span id="feed-loader" class="loader absolute left-1/2"></span>
       </div>
+      <span id="more-loader" class="loader absolute left-1/2"></span>
     </section>
   </main>
 </body>

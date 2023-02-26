@@ -8,13 +8,15 @@ class Pin extends Model
         $db = new Database;
         $this->conn = $db->connect();
     }
-    public function getUserFeed($userid)
+    public function getUserFeed($page)
     {
+        $offset = $page * 20;
         $sql = "select pinid, userid, username, avatarurl, imgurl, websiteurl ,displayname 
                 from pins 
                 inner join appuser
                 on userid = creatorid 
                 where ispublic = true
+                limit 20 offset $offset 
        ";
         $q = $this->conn->query($sql);
         $q->setFetchMode(PDO::FETCH_ASSOC);

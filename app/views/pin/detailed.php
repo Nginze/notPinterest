@@ -195,15 +195,15 @@
                             <div class="flex items-center w-1/4  justify-between">
                                 <button class="bg-bg_secondary w-10 h-10 flex items-center justify-center rounded-full text-xl"><box-icon name="link" color="white"l></box-icon></button>
                                 <button class="bg-bg_secondary w-10 h-10 flex items-center justify-center rounded-full text-xl"><ion-icon name="share-outline"></ion-icon></button>
+                
                             </div>
                             <?php
                             $user = new User;
                             $hasSaved = in_array($user->getUserId(), $post['savemap']);
                             if (!$hasSaved) {
-                                echo '<button id="detail-pin-save" class="bg-btn_primary px-4 py-2 rounded-3xl font-semibold">Save</button>';
+                                echo '<button id="detail-pin-save" class="bg-btn_primary px-4 py-3 rounded-3xl font-semibold">Save</button>';
                             } else {
-
-                                echo '<button id="detail-pin-save" class="bg-bg_primary px-4 py-2 rounded-3xl font-semibold">Saved</button>';
+                                echo '<button id="detail-pin-save" class="bg-bg_primary px-4 py-3 rounded-3xl font-semibold">Saved</button>';
                             }
                             ?>
                         </div>
@@ -215,19 +215,19 @@
                                     <div class="flex items-center">
                                         <img class="mr-4 rounded-full w-10 h-10 object-cover" src=<?php echo $post['avatarurl'] ?> />
                                         <div class="flex flex-col items-start">
-                                            <span class="font-semibold"><?php echo $post['displayname'] ?></span>
-                                            <span class="text-xs text-txt_light font-semibold">@jack123</span>
+                                            <span class="font-semibold"><?php echo $post['username'] ?></span>
+                                            <span class="text-sm text-txt_light font-semibold"><?php echo $post['followcount']['followercount'] ?> followers</span>
                                         </div>
                                     </div>
                                     <?php
                                     $user = new User;
-                                    $isFollowing =  in_array($user->getUserId(), $post['followmap']);
+                                    $isFollowing =  in_array($post['userid'], $post['followmap']);
                                     $postid = $post['userid'];
-                                    $username = $post['displayname'];
+                                    $username = $post['username'];
                                     if (!$isFollowing) {
-                                        echo "<button data-username=$username  data-id=$postid id='follow-btn' class='px-3 py-1 rounded-3xl font-semibold bg-bg_secondary'>Follow</button>";
+                                        echo "<button data-username=$username  data-id=$postid id='follow-btn' class='px-4 py-3 rounded-3xl font-semibold bg-bg_secondary'>Follow</button>";
                                     } else {
-                                        echo "<button data-username=$username data-id=$postid id='follow-btn' class='px-3 py-1 rounded-3xl font-semibold bg-bg_primary'>Following</button>";
+                                        echo "<button data-username=$username data-id=$postid id='follow-btn' class='px-4 py-3 rounded-3xl font-semibold bg-bg_primary'>Following</button>";
                                     }
                                     ?>
                                 </div>
@@ -241,7 +241,7 @@
                                                 </div>
                                                 <div id="comment-content" class="w-4/5 flex flex-col items-start">
                                                     <div class="mb-2">
-                                                        <span><?php echo $comment['displayname'] ?></span>
+                                                        <span><?php echo $comment['username'] ?></span>
                                                         <p class="text-txt_light font-semibold"><?php echo $comment['content'] ?></p>
                                                     </div>
                                                     <div class="w-3/4 flex items-center">

@@ -38,10 +38,8 @@ class Like extends Model
         $userid = $this->getUserId();
         $commentid = $like['commentid'];
         $query = "SELECT * FROM likes 
-                WHERE commentid = :commentid AND creatorid = :creatorid";
+                WHERE commentid = $commentid AND creatorid = $userid";
         $statement = $this->conn->prepare($query);
-        $statement->bindValue(":commentid", $commentid);
-        $statement->bindValue(":creatorid", $this->getUserId());
         $statement->execute();
         $result = $statement->fetchAll(PDO::FETCH_ASSOC);
         if ($statement->rowCount() > 0) {
