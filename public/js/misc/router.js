@@ -64,6 +64,8 @@ $(document).ready(() => {
     $("#recent-nav").addClass("opacity-60");
     $("#recent-ico").addClass("opacity-60");
     $("#recent-ico").attr("type", "regular");
+
+
   });
 
   $("#recent-tab").click(e => {
@@ -105,6 +107,7 @@ $(document).ready(() => {
     $("#following-tab").addClass(
       "bg-bg_aux border-solid border-r-2 border-btn_primary"
     );
+      
   });
 
   $("#profile").click(e => {

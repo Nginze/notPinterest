@@ -17,6 +17,7 @@ $like = new Like;
 $reply = new Reply;
 $savedPin = new SavedPin;
 $userFollow = new UserFollow;
+$userInterest = new UserInterest;
 $profile = $user->getCurrentUserProfile();
 
 $cloudinary = new Cloudinary(
@@ -36,10 +37,12 @@ $app->router->get("/", function () {
 });
 
 $app->router->get("/recent", function () {
+  global $user, $profile;
   require_once __DIR__ . "./app/views/feed/index.php";
 });
 
 $app->router->get("/following", function () {
+  global $user, $profile;
   require_once __DIR__ . "./app/views/feed/index.php";
 });
 
@@ -102,6 +105,11 @@ $app->router->get("/pin", function () {
   // echo "</pre>";
 });
 
+$app->router->get("/user", function () {
+  global $user, $profile;
+  require_once __DIR__ . "./app/views/profile/userprofile.php";
+});
+
 $app->router->get("/pin/detail", function () {
   global $user, $profile;
   require_once __DIR__ . "./app/views/pin/detailed.php";
@@ -115,6 +123,11 @@ $app->router->get("/login", function () {
 
 $app->router->get("/signup", function () {
   require_once __DIR__ . "./app/views/auth/signup.php";
+});
+
+$app->router->get("/onboard", function(){
+  global $profile;
+  require_once __DIR__ . "/app/views/auth/onboard.php";
 });
 
 /** Authentication AJAX Routes */
@@ -143,6 +156,10 @@ $app->router->post("/signup", function () {
   }
 });
 
+$app->router->post("/onboard", function (){
+  global $userInterest;
+  $userInterest->createInterests($_POST['selected']);
+});
 $app->router->get("/auth/github", function () {
   require_once __DIR__ . "./app/views/auth/github.php";
 });
@@ -172,6 +189,25 @@ $app->router->get("/home", function () {
   echo json_encode(array(array("currentuser" => $_SESSION['user']['userid']), $refinedFeed));
 });
 
+
+$app->router->get("/pin/following", function (){
+
+  global $pin, $savedPin;
+  $q = $pin->getFollowingFeed($_GET['page']);
+  $feed = $q->fetchAll(PDO::FETCH_ASSOC);
+  $refinedFeed = array();
+  foreach ($feed as $pin) {
+    $pin['savedmap'] = $savedPin->getSaveMap($pin['pinid']);
+    if (!$pin['savedmap']) {
+      $pin['savedmap'] = array();
+    }
+    array_push($refinedFeed, $pin);
+  }
+  // echo "<pre>"; echo var_dump($feed);
+  // echo "</pre>";
+  header('Content-Type: application/json; charset=utf-8');
+  echo json_encode(array(array("currentuser" => $_SESSION['user']['userid']), $refinedFeed));
+});
 $app->router->get("/replies", function () {
   global $reply;
   $commentid = $_GET['commentid'];
@@ -182,7 +218,7 @@ $app->router->get("/replies", function () {
 $app->router->get("/profile", function () {
   global $user, $userFollow;
   $myprofile = $user->getCurrentUserProfile();
-  array_push($myprofile, $userFollow->getCurrentUserFollowerCount());
+  array_push($myprofile, $userFollow->getCurrentUserFollowerCount(), $userFollow->getCurrentUserFollowingCount());
   header('Content-Type: application/json; charset=utf-8');
   echo json_encode($myprofile);
 });
@@ -218,11 +254,13 @@ $app->router->get("/created", function () {
 });
 
 
-$app->router->get("/user", function () {
-  global $user;
+$app->router->get("/userprofile", function () {
+  global $user, $userFollow, $profile;
   $userid = $_GET['userid'];
+  $userprofile = $user->getUserById($userid);
+  array_push($userprofile, $userFollow->getUserFollowCount($userid), $userFollow->getFollowingCount($userid));
   header('Content-Type: application/json; charset=utf-8');
-  echo json_encode($user->getUserById($userid));
+  echo json_encode($userprofile);
 });
 
 $app->router->get("/search", function () {

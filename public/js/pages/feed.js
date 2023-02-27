@@ -1,13 +1,14 @@
-let pageCursor = 0 
-
+let pageCursor = 0;
+let pinsUrl = "";
 const getUserFeed = () => {
+  console.log(`${pinsUrl}${pageCursor}`)
   $("#feed-loader").show();
   $.ajax({
-    url: `/notPinterest/home?page=${pageCursor}`,
+    url: `${pinsUrl}${pageCursor}`,
     type: "GET",
     success: data => {
       $("#feed-loader").hide();
-      pageCursor += 1
+      pageCursor += 1;
       console.log(data);
       data[1].map(pin => {
         renderPin(pin, data[0].currentuser);
@@ -21,12 +22,12 @@ const getUserFeed = () => {
 
 const loadMore = () => {
   $.ajax({
-    url: `/notPinterest/home?page=${pageCursor}`,
+    url: `${pinsUrl}${pageCursor}`,
     type: "GET",
     success: data => {
-      pageCursor += 1
-      if (data[1].length == 0){
-        $("#more-loader").hide()
+      pageCursor += 1;
+      if (data[1].length == 0) {
+        $("#more-loader").hide();
       }
       console.log(data);
       data[1].map(pin => {
@@ -37,7 +38,7 @@ const loadMore = () => {
       alert("something went wrong fetching data");
     },
   });
-}
+};
 const renderPin = (pin, currentUser) => {
   const hasSaved = pin.savedmap.map(obj => obj.saverid).includes(currentUser);
   $("#pin-container").append(
@@ -103,12 +104,12 @@ const savePost = (pinid, e) => {
 
 const pinObserver = () => {
   const intersectionObserver = new IntersectionObserver(entries => {
-    if(entries[0].intersectionRatio <= 0) return;
-    console.log("loading more pins..")
-    loadMore()
-  })
-  intersectionObserver.observe(document.querySelector("#more-loader"))
-}
+    if (entries[0].intersectionRatio <= 0) return;
+    console.log("loading more pins..");
+    loadMore();
+  });
+  intersectionObserver.observe(document.querySelector("#more-loader"));
+};
 const Eventhandler = () => {
   $("body").on("click", ".clickable", e => {
     e.stopPropagation();
@@ -126,6 +127,18 @@ const Eventhandler = () => {
 };
 
 $(document).ready(() => {
+  const path = window.location.pathname.replace("/notPinterest", "");
+  switch (path) {
+    case "/":
+      pinsUrl = `/notPinterest/home?page=`;
+      break;
+    case "/following":
+      pinsUrl = `/notPinterest/pin/following?page=`;
+      break;
+    default:
+      break;
+  }
+  console.log(pinsUrl);
   getUserFeed();
   Eventhandler();
   pinObserver();

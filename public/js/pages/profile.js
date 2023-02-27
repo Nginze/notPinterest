@@ -1,23 +1,94 @@
+profileurl = "";
 const getUserProfile = () => {
   $.ajax({
-    url: "/notPinterest/profile",
+    url: profileurl,
     type: "GET",
     success: data => {
-      renderProfile(data);
+      console.log(data);
+      renderOther(data);
     },
     error: err => {
       alert("something went wrong fetching data");
     },
   });
 };
+
+const renderOther = data => {
+  $("#profile-container").prepend(
+    `
+            <div class="flex flex-col items-center mb-10">
+                <img class="w-36 h-36 bg-bg_aux rounded-full object-cover mb-6" src=${
+                  data.avatarurl
+                }/> 
+                <span class="text-3xl mb-2 font-semibold">${
+                  data.username
+                }</span>
+                <span class="text-sm text-bg_secondary font-semibold mb-4">${
+                  data.emailaddress
+                }</span>
+                <span class="w-2/3 mb-4 opacity-60 text-center">${
+                  data.bio ? data.bio : ""
+                }</span>
+                <div class="flex items-center font-semibold">
+                  <span class="text-sm mr-4">${
+                    data[0].followercount
+                  } Followers </span>
+                  <span class="text-sm">${
+                    data[1].followingcount
+                  } Following </span>
+                </div>
+            </div> 
+            <div class="mb-10">
+                <button class="contact relative mr-6 px-4 py-2 rounded-3xl text-black bg-white font-semibold">
+                  <div id="contact-modal" style="display:none" class="w-60 rounded-2xl flex flex-col items-start p-3 font-medium text-white h-auto bg-bg_aux absolute right-0 bottom-12 z-50">
+                    <span class="hover:bg-bg_secondary w-full rounded-lg px-2 py-2 flex items-center"><box-icon class="mr-3" color="white" type='solid' name='envelope'></box-icon> ${
+                      data.emailaddress
+                    } </span>
+                    <span class="hover:bg-bg_secondary w-full rounded-lg px-2 py-2 flex items-center"><box-icon color="#1f9cea" class="mr-3" name='twitter' type='logo' ></box-icon>Twitter</span>
+                    <span class="hover:bg-bg_secondary w-full rounded-lg px-2 py-2 flex items-center"><box-icon color="#4065ac" class="mr-3" name='facebook-circle' type='logo' ></box-icon>Facebook</span>
+                  </div>
+                  Contact
+                </button> 
+                <button data-username=${data.username} data-id = ${
+      data.userid
+    } id="follow" class="px-4 py-2 rounded-3xl text-white bg-btn_primary font-semibold">Follow</button> 
+            </div>
+
+            <div class="mb-10">
+                <button id="created" class="mr-6 px-3 py-2 bg-bg_secondary hover:bg-bg_secondary rounded-lg 
+                ">Created</button> 
+
+                <button id="saved" class="px-3 py-2 hover:bg-bg_secondary rounded-lg 
+                ">Saved</button> 
+            </div>
+            
+        `
+  );
+};
 const renderProfile = data => {
   $("#profile-container").prepend(
     `
             <div class="flex flex-col items-center mb-10">
-                <img class="w-36 h-36 bg-bg_aux rounded-full object-cover mb-6" src=${data.avatarurl}/> 
-                <span class="text-2xl font-semibold">${data.username}</span>
-                <span class="text-sm text-bg_secondary font-semibold mb-4">${data.emailaddress}</span>
-                <span class="text-sm">${data[0].followercount} Followers </span>
+                <img class="w-36 h-36 bg-bg_aux rounded-full object-cover mb-6" src=${
+                  data.avatarurl
+                }/> 
+                <span class="text-3xl mb-2 font-semibold">${
+                  data.username
+                }</span>
+                <span class="text-sm text-bg_secondary font-semibold mb-4">${
+                  data.emailaddress
+                }</span>
+                <span class="w-2/3 mb-4 opacity-60 text-center">${
+                  data.bio ? data.bio : ""
+                }</span>
+                <div class="flex items-center font-semibold">
+                  <span class="text-sm mr-4">${
+                    data[0].followercount
+                  } Followers </span>
+                  <span class="text-sm">${
+                    data[1].followingcount
+                  } Following </span>
+                </div>
             </div> 
             <div class="mb-10">
                 <button class="share mr-6 px-4 py-2 rounded-3xl text-black bg-white font-semibold">Share</button> 
@@ -141,6 +212,43 @@ const getCreatedPins = () => {
   });
 };
 
+const followUser = e => {
+  const followerid = $("#follow").data("id");
+  const username = $("#follow").data("username");
+  const isFollowing = $("#follow").html() == "Follow";
+  console.log(isFollowing)
+  if (isFollowing) {
+    $(e.target).html("Following...");
+    $(e.target).removeClass("bg-btn_primary");
+    $(e.target).addClass("bg-bg_secondary");
+  } else {
+    $(e.target).removeClass("bg-bg_secondary");
+    $(e.target).addClass("bg-btn_primary");
+    $(e.target).html("Follow");
+  }
+  $.ajax({
+    url: "/notPinterest/user/follow",
+    type: "POST",
+    data: { followerid },
+    success: data => {
+      if (isFollowing) {
+        $(e.target).html("Following");
+      }
+    },
+    error: err => {
+      if (isFollowing) {
+        $(e.target).removeClass("bg-bg_secondary");
+        $(e.target).addClass("bg-btn_primary");
+        $(e.target).html("Follow");
+        console.log("something went wrong saving post");
+      } else {
+        $(e.target).html("Following");
+        $(e.target).removeClass("bg-btn_primary");
+        $(e.target).addClass("bg-bg_secondary");
+      }
+    },
+  });
+};
 const savePost = (pinid, e) => {
   const isSaving = $(e.target).html() == "Save";
   if (isSaving) {
@@ -178,7 +286,7 @@ const savePost = (pinid, e) => {
 
 const Eventhandler = () => {
   $("body").on("click", "#update-profile-btn", function (e) {
-    const avatarurl = $("#profile-tag").attr("src")
+    const avatarurl = $("#profile-tag").attr("src");
     const emailaddress = $("#email-input").val();
     const username = $("#username-input").val();
     const bio = $("#bio-input").val();
@@ -228,8 +336,30 @@ const Eventhandler = () => {
     $("#mypins").find(".pin").remove();
     getSavedPins();
   });
+
+  $("body").on("click", ".contact", () => {
+    $("#contact-modal").toggle();
+  });
+
+  $("body").on("click", "#follow", function(e){
+    console.log("hello");
+    followUser(e);
+  });
 };
 $(document).ready(() => {
+  let path = window.location.pathname.replace("/notPinterest", "");
+  let query = window.location.search;
+  switch (path) {
+    case "/myprofile":
+      profileurl = "/notPinterest/profile";
+      break;
+
+    case "/user":
+      profileurl = `/notPinterest/userprofile${query}`;
+      break;
+    default:
+      break;
+  }
   getUserProfile();
   getCreatedPins();
   Eventhandler();

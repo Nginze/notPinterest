@@ -8,14 +8,16 @@ class Pin extends Model
         $db = new Database;
         $this->conn = $db->connect();
     }
+
     public function getUserFeed($page)
     {
+        $userid  = $this->getUserId();
         $offset = $page * 20;
-        $sql = "select pinid, userid, username, avatarurl, imgurl, websiteurl ,displayname 
+        $sql = "select pinid, userid, username, category, avatarurl, imgurl, websiteurl ,displayname 
                 from pins 
                 inner join appuser
                 on userid = creatorid 
-                where ispublic = true
+                where ispublic = true and category in (select interest from userinterests where userid = $userid)
                 limit 20 offset $offset 
        ";
         $q = $this->conn->query($sql);
@@ -23,6 +25,23 @@ class Pin extends Model
         return $q;
     }
 
+    public function getFollowingFeed($page)
+    {
+        $userid  = $this->getUserId();
+        $offset = $page * 20;
+        $sql = "select pinid, userid, username, category, avatarurl, imgurl, websiteurl ,displayname 
+                from pins 
+                inner join appuser
+                on userid = creatorid 
+                where ispublic = true and userid in (select userid from pins where creatorid in (
+                    select followerid from userfollow where userid = $userid
+                )) 
+                limit 20 offset $offset 
+       ";
+        $q = $this->conn->query($sql);
+        $q->setFetchMode(PDO::FETCH_ASSOC);
+        return $q;
+    }
     public function getPinById($pinid)
     {
         try {

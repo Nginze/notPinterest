@@ -3,8 +3,7 @@
 class Reply extends Model
 {
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->tableName = "replies";
         $db = new Database;
         $this->conn = $db->connect();

@@ -96,4 +96,33 @@ class UserFollow extends Model
             return false;
         }
     }
+
+    public function getCurrentUserFollowingCount()
+    {
+
+        try {
+            $query = "SELECT count(userid) as followingcount FROM $this->tableName WHERE userid= :id";
+            $statement = $this->conn->prepare($query);
+            $statement->bindValue(":id", $this->getUserId());
+            $statement->execute();
+            return $statement->fetch();
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            return false;
+        }
+    }
+    public function getFollowingCount($userid)
+    {
+
+        try {
+            $query = "SELECT count(userid) as followingcount FROM $this->tableName WHERE userid= :id";
+            $statement = $this->conn->prepare($query);
+            $statement->bindValue(":id", $userid);
+            $statement->execute();
+            return $statement->fetch();
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            return false;
+        }
+    }
 }

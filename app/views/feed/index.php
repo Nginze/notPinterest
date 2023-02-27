@@ -163,15 +163,15 @@
             </a>
           </li>
 
-          <li class="px-4 py-3 cursor-pointer hover:bg-bg_aux w-full">
-            <a href="/notPinterest/" class="flex items-center px-4 text-lg ">
+          <li id="following-tab" class="px-4 py-3 cursor-pointer hover:bg-bg_aux w-full">
+            <a href="/notPinterest/following" class="flex items-center px-4 text-lg ">
               <box-icon id="following-ico" class="mr-4 opacity-60" color="white" name="group"></box-icon>
               <span id="following-nav" class="opacity-60">Following</span>
             </a>
           </li>
 
-          <li class="px-4 py-3 cursor-pointer hover:bg-bg_aux w-full">
-            <a href="/notPinterest/" class="flex items-center px-4 text-lg">
+          <li id="recent-tab" class="px-4 py-3 cursor-pointer hover:bg-bg_aux w-full">
+            <a href="/notPinterest/recent" class="flex items-center px-4 text-lg">
               <box-icon id="recent-ico" class="mr-4 opacity-60" color="white" name="time"></box-icon>
               <span id="recents-nav" class="opacity-60">Recents</span>
             </a>
