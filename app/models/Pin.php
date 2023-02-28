@@ -108,11 +108,16 @@ class Pin extends Model
     }
 
 
-    public function search($query)
+    public function search($query, $by)
     {
         try {
-            $query = "SELECT pinid, pintitle, imgurl FROM $this->tableName
-                      WHERE (`pintitle` LIKE '%" . $query . "%') OR (`pindesc` LIKE '%" . $query . "%')";
+            $query = $by == "pins" ? "SELECT pinid, pintitle, imgurl FROM $this->tableName
+                      WHERE (`pintitle` LIKE '%" . $query . "%') OR (`pindesc` LIKE '%" . $query . "%')
+                      LIMIT 4"
+                : "SELECT userid, username, avatarurl FROM $by
+                      WHERE (`username` LIKE '%" . $query . "%') OR (`emailaddress` LIKE '%" . $query . "%')
+                      LIMIT 4";
+            // echo $query;
             $statement = $this->conn->prepare($query);
             $statement->bindValue(":id", $this->getUserId());
             $statement->execute();

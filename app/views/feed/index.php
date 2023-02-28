@@ -9,6 +9,7 @@
   <script rel="preload" nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
   <script rel="preload" src="https://code.iconify.design/iconify-icon/1.0.5/iconify-icon.min.js"></script>
   <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@2.51.2/dist/full.css" rel="stylesheet" type="text/css" />
   <title>Document</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -218,12 +219,12 @@
           <!-- <ion-icon class="absolute top-3.5 text-xl left-3" name="search-outline"></ion-icon> -->
           <input id="search-input" class="bg-bg_secondary py-3 px-12  w-full rounded-lg outline-none" type="text" placeholder="Search your pins" />
 
-          <div id="result-container" style="display:none" class="w-full h-96 rounded-lg absolute bg-bg_aux z-50 top-19 mt-3">
+          <div id="result-container" style="display:none" class="w-full h-auto p-4 rounded-lg absolute bg-bg_aux z-50 top-19 mt-3">
 
           </div>
         </div>
         <div class="flex flex-row items-center">
-          <button class="w-12 h-12 mr-4 bg-btn_secondary rounded-lg text-xl text-black flex items-center justify-center">
+          <button id="filter" class="w-12 h-12 mr-4 bg-btn_secondary rounded-lg text-xl text-black flex items-center justify-center">
             <box-icon name="sort" color="black"></box-icon>
             <!-- <ion-icon name="filter-outline"></ion-icon> -->
           </button>

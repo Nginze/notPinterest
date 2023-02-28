@@ -125,7 +125,7 @@ $app->router->get("/signup", function () {
   require_once __DIR__ . "./app/views/auth/signup.php";
 });
 
-$app->router->get("/onboard", function(){
+$app->router->get("/onboard", function () {
   global $profile;
   require_once __DIR__ . "/app/views/auth/onboard.php";
 });
@@ -156,7 +156,7 @@ $app->router->post("/signup", function () {
   }
 });
 
-$app->router->post("/onboard", function (){
+$app->router->post("/onboard", function () {
   global $userInterest;
   $userInterest->createInterests($_POST['selected']);
 });
@@ -190,7 +190,7 @@ $app->router->get("/home", function () {
 });
 
 
-$app->router->get("/pin/following", function (){
+$app->router->get("/pin/following", function () {
 
   global $pin, $savedPin;
   $q = $pin->getFollowingFeed($_GET['page']);
@@ -258,18 +258,19 @@ $app->router->get("/userprofile", function () {
   global $user, $userFollow, $profile;
   $userid = $_GET['userid'];
   $userprofile = $user->getUserById($userid);
-  array_push($userprofile, $userFollow->getUserFollowCount($userid), $userFollow->getFollowingCount($userid));
+  array_push($userprofile, $userFollow->getUserFollowCount($userid), $userFollow->getFollowingCount($userid), $userFollow->getFollowMap());
   header('Content-Type: application/json; charset=utf-8');
   echo json_encode($userprofile);
 });
 
 $app->router->get("/search", function () {
   $query = $_GET['query'];
+  $by = $_GET['type'];
   $min_length = 3;
   $pin = new Pin;
-  if (strlen($query) >= $min_length) {
+  if (strlen($query) >= $min_length && $by) {
     header('Content-Type: application/json; charset=utf-8');
-    echo json_encode($pin->search($query));
+    echo json_encode($pin->search($query, $by));
   }
 });
 

@@ -14,6 +14,8 @@ const getUserProfile = () => {
 };
 
 const renderOther = data => {
+  followermap = data[2].map(f => f.followerid);
+  hasFollowed = followermap.includes(data.userid)
   $("#profile-container").prepend(
     `
             <div class="flex flex-col items-center mb-10">
@@ -51,7 +53,7 @@ const renderOther = data => {
                 </button> 
                 <button data-username=${data.username} data-id = ${
       data.userid
-    } id="follow" class="px-4 py-2 rounded-3xl text-white bg-btn_primary font-semibold">Follow</button> 
+    } id="follow" class="px-4 py-2 rounded-3xl text-white ${hasFollowed ? "bg-bg_secondary" : "bg-btn_primary" } font-semibold">${hasFollowed ? "Following" : "Follow"}</button> 
             </div>
 
             <div class="mb-10">
@@ -216,7 +218,7 @@ const followUser = e => {
   const followerid = $("#follow").data("id");
   const username = $("#follow").data("username");
   const isFollowing = $("#follow").html() == "Follow";
-  console.log(isFollowing)
+  console.log(isFollowing);
   if (isFollowing) {
     $(e.target).html("Following...");
     $(e.target).removeClass("bg-btn_primary");
@@ -341,7 +343,7 @@ const Eventhandler = () => {
     $("#contact-modal").toggle();
   });
 
-  $("body").on("click", "#follow", function(e){
+  $("body").on("click", "#follow", function (e) {
     console.log("hello");
     followUser(e);
   });
