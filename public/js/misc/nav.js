@@ -16,6 +16,7 @@ const renderUserPreview = data => {
   data.map(u => {
     $("#result-container").append(
       `
+      <a href="/notPinterest/user?userid=${u.userid}">
       <div class="flex items-center mb-4 cursor-pointer p-2 rounded-lg hover:bg-bg_secondary">
       <div class="w-12 h-12 mr-4">
           <img class="w-full h-full rounded-full object-cover" src=${u.avatarurl} />
@@ -25,6 +26,7 @@ const renderUserPreview = data => {
           <p class="text-txt_light font-semibold"></p>
       </div>
       </div>
+      </a>
       `
     );
   });
@@ -34,6 +36,7 @@ const renderPinPreview = data => {
   data.map(p => {
     $("#result-container").append(
       `
+      <a href="/notPinterest/pin?pinid=${p.pinid}">
       <div class="flex items-center cursor-pointer rounded-lg mb-4 hover:bg-bg_secondary py-2 px-2">
       <div class="w-12 h-16 mr-4">
           <img class="w-full h-full rounded-xl object-cover" src=${p.imgurl} />
@@ -43,6 +46,7 @@ const renderPinPreview = data => {
           <p class="text-txt_light font-semibold"></p>
       </div>
       </div>
+      </a>
       `
     );
   });
