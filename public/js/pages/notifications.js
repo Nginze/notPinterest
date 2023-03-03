@@ -42,3 +42,14 @@ $(document).ready(function() {
     }
   });
 });
+
+//   $('.notification').on('click', function(){
+//     $(this).hide();
+//   });
+
+//   // when the user clicks outside of the notification, hide the notification
+//   $(document).on('click', function(event) {
+//     if (!$(event.target).closest('.notification').length) {
+//         $('.notification').hide();
+//     }
+//   });
