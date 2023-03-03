@@ -22,4 +22,15 @@ $(document).ready(function() {
 			$('#pin_desc').removeClass('error');
 		}
 		
+			// Validate category
+		if (category == '') {
+			$('#category').addClass('error');
+			errors++;
+		} else {
+			$('#category').removeClass('error');
+		}
+		
+		if (errors > 0) {
+			event.preventDefault();
+		}
   })
