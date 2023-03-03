@@ -1,23 +1,23 @@
-//old mixer code
-// let selected = [];
-// const eventHandler = () => {
-//   $(".category").click(function (e) {
-//     $(this).find(".select-ico").first().toggle();
-//     $(this).find(".overlay").first().toggle();
-//     const key = $(this).find(".key").first().html()
-//     if (selected.includes(key)){
-//         selected = selected.filter((cat) => cat != key)
-//     }else{
-//         selected.push(key)
-//     }
-//     checkSelected()
+old mixer code
+let selected = [];
+const eventHandler = () => {
+  $(".category").click(function (e) {
+    $(this).find(".select-ico").first().toggle();
+    $(this).find(".overlay").first().toggle();
+    const key = $(this).find(".key").first().html()
+    if (selected.includes(key)){
+        selected = selected.filter((cat) => cat != key)
+    }else{
+        selected.push(key)
+    }
+    checkSelected()
 
-//     console.log(selected)
-//   });
-//   $("#onboard").click(function (e){
-//     submitInterests()
-//   })
-// };
+    console.log(selected)
+  });
+  $("#onboard").click(function (e){
+    submitInterests()
+  })
+};
 
 const checkSelected = () => {
     if (selected.length >= 4 && selected.length <=6){
