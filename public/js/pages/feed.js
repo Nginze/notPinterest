@@ -144,21 +144,3 @@ $(document).ready(() => {
   pinObserver();
 });
 
-// $.get("/notPinterest/home", (data, status) => {
-//   $("#loader").hide();
-//   data.map(e => {
-//     $("#pin-container").append(
-//       `
-//       `
-//     );
-//   });
-// });
-
-//   $("body").on("click", ".share", e => {
-//     e.stopPropagation();
-//   });
-
-//   $("body").on("click", ".link", e => {
-//     e.stopPropagation();
-//   });
-// });
