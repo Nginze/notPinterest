@@ -99,10 +99,6 @@ $app->router->get("/pin", function () {
   $post['followmap'] = $refinedfollowmap;
   $post['savemap'] = $refinedsavemap;
   require_once __DIR__ . "./app/views/pin/detailed.php";
-  // echo "<pre>";
-  // echo var_dump($post);
-  // echo var_dump($comments);
-  // echo "</pre>";
 });
 
 $app->router->get("/user", function () {
