@@ -19,19 +19,19 @@
 //   })
 // };
 
-// const checkSelected = () => {
-//     if (selected.length >= 4 && selected.length <=6){
-//         $("#onboard").addClass("bg-btn_primary")
-//         $("#onboard").removeClass("bg-bg_primary")
-//         $("#onboard").removeClass("cursor-not-allowed")
-//         $("#onboard").prop("disabled", false)
-//     }else{
-//         $("#onboard").removeClass("bg-btn_primary")
-//         $("#onboard").addClass("cursor-not-allowed")
-//         $("#onboard").addClass("bg-bg_primary")
-//         $("#onboard").prop("disabled", true)
-//     }
-// }
+const checkSelected = () => {
+    if (selected.length >= 4 && selected.length <=6){
+        $("#onboard").addClass("bg-btn_primary")
+        $("#onboard").removeClass("bg-bg_primary")
+        $("#onboard").removeClass("cursor-not-allowed")
+        $("#onboard").prop("disabled", false)
+    }else{
+        $("#onboard").removeClass("bg-btn_primary")
+        $("#onboard").addClass("cursor-not-allowed")
+        $("#onboard").addClass("bg-bg_primary")
+        $("#onboard").prop("disabled", true)
+    }
+}
 // const submitInterests = () => {
 //   console.log("data in select", selected)
 //   $.ajax({
