@@ -28,25 +28,25 @@
     </form>
 </body>
 <script>
-const form = document.querySelector("form")
-$('form').submit((e) => {
-    e.preventDefault()
-    const data = {
-        title: $("#title").val(),
-        desc: $("#desc").val(),
-        link: $("#link").val()
-    }
+// const form = document.querySelector("form")
+// $('form').submit((e) => {
+//     e.preventDefault()
+//     const data = {
+//         title: $("#title").val(),
+//         desc: $("#desc").val(),
+//         link: $("#link").val()
+//     }
 
-    console.log(data)
-    $.post('/notPinterest/create', data, (res, status) => {
-        if (status == "success") {
-            alert("pin created successfully")
-        } else {
-            alert("failed insert. try again")
-        }
-    })
-})
-</script>
+//     console.log(data)
+//     $.post('/notPinterest/create', data, (res, status) => {
+//         if (status == "success") {
+//             alert("pin created successfully")
+//         } else {
+//             alert("failed insert. try again")
+//         }
+//     })
+// })
+// </script>
 
 
 
